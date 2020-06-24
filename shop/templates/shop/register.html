@@ -1,30 +1,51 @@
-{% extends 'shop/basic.html' %}
-{% block title%} Register-Visa Anywhere{% endblock %}
-{% block body %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <div class="container my-4">
-        <div class="row justify-content-center">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-            <div class="col-8">
-                <div class="card">
-                    <h4 class="card-header text-center">Register</h4>
-                    <div class="card-block">
-                      {% load crispy_forms_tags %}
-                        <form method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {{ user_form|crispy }}
-                            {{ profile_form|crispy }}
-                            <!---{% crispy user_form %}
-                            {% crispy profile_form %}--->
-                            <div class="mx-auto text-center">
-                                <input type="submit" value="Create Account" class="btn btn-primary">
-                            </div>
-                        </form>
-                        <a href="/shop/login">Already Registered? Sign In Here!</a>
-                    </div>
+    <title>Register- Visa Anywhere</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/shop">Visa Anywhere</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</nav>
+<div class="container my-4">
+    <div class="row justify-content-center">
+
+        <div class="col-8">
+            <div class="card">
+                <h4 class="card-header text-center">Register</h4>
+                <div class="card-block">
+                  {% load crispy_forms_tags %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ user_form|crispy }}
+                        {{ profile_form|crispy }}
+                        <!---{% crispy user_form %}
+                        {% crispy profile_form %}--->
+                        <div class="mx-auto text-center">
+                            <input type="submit" value="Create Account" class="btn btn-primary">
+                        </div>
+                    </form>
+                    <a href="/shop/login">Already Registered? Sign In Here!</a>
                 </div>
             </div>
-
         </div>
+
     </div>
-{% endblock %}
+</div>
+   <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -64,7 +64,7 @@ $('#itemsJson').val(JSON.stringify(cart));
 {% if thank %}
 alert("Your Order has been successfully placed.");
 localStorage.clear();
-document.location="/shop";
+document.location="{% url 'shop:merchant_list' %}";
 {% endif %}
 </script>
 {% endblock %}

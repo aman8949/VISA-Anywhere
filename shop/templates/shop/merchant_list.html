@@ -10,7 +10,7 @@
                 <a href="{% url 'shop:product_list' x.id %}"><li class="list-group-item d-flex justify-content-between align-items-center">
                     {{x.name}}
                     <span class="badge badge-primary badge-pill">{{x.address}}</span>
-                </a></li>
+                </li></a>
                 {% endfor %}
             </ul>
         </div>
@@ -21,9 +21,44 @@
 
 {% block js %}
 <script>
-    var count = 0;
-    for (var i = 0; i < Object.keys(cart).length; i++)
-        count = count + Object.values(cart)[i][0];
-    document.getElementById('cart').innerHTML = count;
-</script>
+    // Find out the cart items from localStorage
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        updateCart(cart);
+    }
+    //Add Popover to cart
+    $('#popcart').popover();
+    updatePopover(cart);
+    
+    function updatePopover(cart){
+        var popStr="";
+        popStr=popStr + "<h6>Items in your cart</h6><div class='mx-2 my-2'>";
+        var i=1;
+        for(var item in cart){
+            popStr=popStr + "<b>"+ i + "</b>. ";
+            popStr=popStr+cart[item][1] + "... Qty: "+ cart[item][0]+ '<br>';
+            i=i+1;
+        }
+        popStr=popStr+"</div><a href='/shop/checkout'><button id='checkout' class='btn btn-primary'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-primary'>Clear Cart</button>";
+        document.getElementById("popcart").setAttribute('data-content', popStr);
+        $('#popcart').popover('show');
+    }
+    function updateCart(cart) {
+        localStorage.setItem('cart', JSON.stringify(cart));
+        var count=0;
+        for(var i=0;i<Object.keys(cart).length;i++)
+        count=count+Object.values(cart)[i][0];
+        document.getElementById('cart').innerHTML = count;
+        updatePopover(cart);
+    }
+    function clearCart(){
+        cart=JSON.parse(localStorage.getItem('cart'));
+        localStorage.clear();
+        cart={};
+        updateCart(cart);
+    }
+    </script>
 {% endblock %}
