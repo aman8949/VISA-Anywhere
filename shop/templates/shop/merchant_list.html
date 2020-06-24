@@ -1,0 +1,29 @@
+{% extends 'shop/basic.html' %}
+{% block title%} Visa Anywhere{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2>Merchants Nearby Your Location...</h2>
+        <div>
+            <ul class="list-group" id="items">
+                {% for x in merchant_list %}
+                <a href="{% url 'shop:product_list' x.id %}"><li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{x.name}}
+                    <span class="badge badge-primary badge-pill">{{x.address}}</span>
+                </a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    var count = 0;
+    for (var i = 0; i < Object.keys(cart).length; i++)
+        count = count + Object.values(cart)[i][0];
+    document.getElementById('cart').innerHTML = count;
+</script>
+{% endblock %}

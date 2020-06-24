@@ -1,0 +1,50 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %} {{product.product_name}}- My Awesome Cart {% endblock %}
+{% block body %}
+
+<div class="container">
+    <div class="row my-4">
+        <div class="col-md-4">
+            <img src="/media/{{product.image}}" alt="Image Not Found" style="width: 233px;height:385px;">
+            <div>
+                <button class="btn btn-primary my-4 mx-3">Buy Now</button>
+                <button class="btn btn-primary my-4 ">Add to Cart</button>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2>{{product.product_name}}</h2>
+            <h4>Price: Rs{{product.price}}</h4>
+            <p>{{product.desc}}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+console.log('working');
+if(localStorage.getItem('cart') == null){
+var cart = {};
+}
+else
+{
+cart = JSON.parse(localStorage.getItem('cart'));
+document.getElementById('cart').innerHTML = Object.keys(cart).length;
+}
+$('.cart').click(function(){
+console.log('clicked');
+var idstr = this.id.toString();
+console.log(idstr);
+if (cart[idstr] !=undefined){
+cart[idstr] = cart[idstr] + 1;
+}
+else
+{
+cart[idstr] = 1;
+}
+console.log(cart);
+localStorage.setItem('cart', JSON.stringify(cart));
+document.getElementById('cart').innerHTML = Object.keys(cart).length;
+});
+</script>
+{% endblock %}

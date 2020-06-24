@@ -1,0 +1,39 @@
+{% extends 'shop/basic.html' %}
+{% block title%} Login - Visa Anywhere{% endblock %}
+{% block body %}
+<div class="container">
+  <div class="row justify-content-center">
+
+      <div class="my-4 col-4">
+          <div class="card">
+              <h4 class="card-header text-center">Login</h4>
+              <div class="card-block">
+                {% if messages %}
+                  <ul class="messages">
+                  {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                  {% endfor %}
+                  </ul>
+                {% endif %}
+                  <form method="POST" action="{% url 'shop:login' %}">
+                      {% csrf_token %}
+                      <div class="form-group">
+                          <label>Username</label>
+                          <input name="username" type="text" class="form-control">
+                      </div>
+                      <div class="form-group">
+                          <label>Password</label>
+                          <input name="password" type="password" class="form-control">
+                      </div>
+                      <a href="/shop/register">Not Registered Yet? Sign Up Here!</a>
+                      <div class="mx-auto text-center">
+                          <input type="submit" value="Login" class="btn btn-primary">
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+
+  </div>
+</div>
+{% endblock %}
