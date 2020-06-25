@@ -124,6 +124,32 @@ def product_list(request,merchant_id):
     params = {'allProds':allProds}
     return render(request,'shop/index.html',params)
 
+def searchMatch(query,item):
+    if query in item.product_name or query in item.desc or query in item.category or query in item.product_name.lower() or query in item.desc.lower() or query in item.category.lower() or query in item.product_name.upper() or query in item.desc.upper() or query in item.category.upper():
+        return True
+    else:
+        return False
+
+@login_required
+def search(request):
+    query = request.GET.get('search')
+    allProds=[]
+    catprods= Product.objects.values('category','product_id')
+    cats={item['category'] for item in catprods}
+    for cat in cats:
+        prod_temp=Product.objects.filter(category=cat)
+        prod = [ item for item in prod_temp if searchMatch(query,item)]
+        n=len(prod)
+        nSlides=n//4+ceil(n/4-(n//4))
+
+        if len(prod)!=0:
+            allProds.append([prod, range(1,nSlides), nSlides])
+    params = {'allProds': allProds, "msg": ""}
+    if len(allProds) == 0 or len(query)<4:
+        params = {'msg': "Please make sure to enter relevant search query"}
+    return render(request, 'shop/search.html', params)
+
+
 def contact(request):
     if request.method=="POST":
         name=request.POST.get('name')
