@@ -69,7 +69,7 @@
         </tr>
         <tr>
           <td>Current Order Status</td>
-          <td>{{order.order_status}}</td>
+          <td id="order_stat">{{order.order_status}}</td>
         </tr>
         <tr>
           <td>Order Time</td>
@@ -92,20 +92,42 @@
         </tr>
       </tbody>
     </table>
+    </div>
+    <div id="select_action" class="container my-3">
     <h1>Select Order Action</h1>
     <form action="{% url 'shop:mer_order_detail' order.order_id %}" method="post" enctype="multipart/form-data"> {% csrf_token %}
       <div class="radio my-4">
-        <label><input type="radio" name="order_status" value="Accept Order" required>Accept Order</label>
+        <label><input type="radio" id="accept" name="order_status" value="Accept Order" required>Accept Order</label>
         <br>
-        <label><input type="radio" name="order_status" value="Reject Order">Reject Order</label>
-      </div> 
+        <label><input type="radio" id="reject" name="order_status" value="Reject Order">Reject Order</label>
+      </div>
+      <div style="display: none;" id="tim"> 
       <label>Specify Estimated Time<input type="datetime-local" name="time"></label>
-      <br>
+    </div>
+    <br>
       <button type="submit" class="btn btn-success">Submit</button>
     </form>
   </div>
-
   </form>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  <script>
+    var stat=document.getElementById('order_stat').innerHTML;
+    var x=document.getElementById('select_action');
+    if(stat!=="Action Pending")
+      x.style.display="none";
+
+  $(()=> {
+    $('input[name="order_status"]').on('click', ()=> {
+      var y=document.getElementById('tim');
+      if(document.getElementById('accept').checked)
+      y.style.display="block";
+      else
+      y.style.display="none";
+})});
+
+</script>
 </body>
 
 </html>
