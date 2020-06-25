@@ -43,4 +43,7 @@ class Order(models.Model):
     items_json=models.CharField(max_length=5000)
     user = models.ForeignKey('UserRegistration', on_delete=models.CASCADE, null = True)
     is_delivery = models.BooleanField(default = False, blank = True)
-   
+    time = models.DateTimeField(null=True)
+    est_time = models.DateTimeField(null=True)
+    order_status = models.CharField(max_length=50, default="Action Pending", null=True)
+    merchant = models.IntegerField(null = True)

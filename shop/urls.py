@@ -15,5 +15,8 @@ urlpatterns = [
     path('product_list/<int:merchant_id>', views.product_list, name='product_list'),
     path('merchant_homepage', views.merchant_homepage, name='merchant_homepage'),
     path('product_delete/<int:product_id>', views.product_delete, name='product_delete'),
-    path('product_add/',views.product_add, name='product_add')
+    path('product_add/',views.product_add, name='product_add'),
+    path('mer_order_list/',views.mer_order_list, name='mer_order_list'),
+    path('mer_order_detail/<int:order_id>', views.mer_order_detail, name='mer_order_detail'),
+    path('user_order_list/',views.user_order_list, name='user_order_list'),
 ]

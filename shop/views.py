@@ -36,8 +36,11 @@ def register(request):
 
     # if request.method == 'GET':
     else:
-        if request.user.is_authenticated:
+        mer = UserRegistration.objects.filter(user_id = request.user.id).first()
+        if request.user.is_authenticated and mer.is_merchant==False:
             return HttpResponseRedirect(reverse('shop:merchant_list'))
+        elif request.user.is_authenticated and mer.is_merchant==True:
+            return HttpResponseRedirect(reverse('shop:merchant_homepage'))
         else:
             user_form = UserForm()
             profile_form = UserRegistrationForm()
@@ -63,10 +66,12 @@ def login(request):
             messages.add_message(request,messages.ERROR,"Invalid password. Please try again.")
             return HttpResponseRedirect(reverse('shop:login'))
     else:
-        if request.user.is_authenticated:
+        mer = UserRegistration.objects.filter(user_id = request.user.id).first()
+        if request.user.is_authenticated and mer.is_merchant==False:
             return HttpResponseRedirect(reverse('shop:merchant_list'))
-        else:
-            return render(request,'shop/login.html')
+        elif request.user.is_authenticated and mer.is_merchant==True:
+            return HttpResponseRedirect(reverse('shop:merchant_homepage'))
+        return render(request,'shop/login.html')
 
 @login_required
 def merchant_homepage(request):
@@ -144,10 +149,36 @@ def checkout(request):
     if request.method=="POST":
         user = UserRegistration.objects.filter(user_id=request.user.id).first()
         items_json=request.POST.get('itemsJson')
+        mer_id = request.POST['merid']
         thank=True
-        order=Order(items_json=items_json, user_id=user.id, is_delivery= (request.POST['is_delivery']=='Home Delivery') )
+        order=Order(items_json=items_json, user_id=user.id, is_delivery= (request.POST['is_delivery']=='Home Delivery'), 
+                    merchant=mer_id, time = datetime.datetime.now())
         order.save()
         return render(request, 'shop/checkout.html',{'thank':thank})
     return render(request, 'shop/checkout.html')
-    
-# Create your views here.
+
+@login_required
+def mer_order_list(request):
+    merchant = UserRegistration.objects.filter(user_id=request.user.id).first()
+    orders = Order.objects.filter(merchant = merchant.id).order_by('-time')
+    return render(request, 'shop/mer_order_list.html', {'orders':orders})
+
+@login_required
+def mer_order_detail(request,order_id):
+    order=Order.objects.filter(order_id=order_id)
+    if request.method=="POST":
+        order=Order.objects.get(order_id=order_id)
+        if request.POST['order_status']=="Accept Order":
+            order.order_status = "Approved"
+            order.est_time=request.POST.get('time')
+        else:
+            order.order_status = "Rejected"
+        order.save()
+        return HttpResponseRedirect(reverse('shop:mer_order_list'))
+    return render(request, 'shop/mer_order_detail.html', {'order':order[0]})
+
+@login_required
+def user_order_list(request):
+    user = UserRegistration.objects.filter(user_id=request.user.id).first()
+    orders = Order.objects.filter(user_id = user.id).order_by('-time')
+    return render(request, '',{'orders':orders})
