@@ -7,6 +7,7 @@ from .models import Product, Contact, Order, UserRegistration
 from math import ceil
 from django.urls import reverse, reverse_lazy
 from .forms import UserForm,UserRegistrationForm
+import datetime
 
 
 @login_required
@@ -52,7 +53,7 @@ def login(request):
             login_user(request,user)
             user_profile = UserRegistration.objects.filter(user_id=request.user.id).first()
             if user_profile.is_merchant:
-                return HttpResponseRedirect(reverse('merchant:merchant_homepage'))
+                return HttpResponseRedirect(reverse('shop:merchant_homepage'))
             else:
                 return HttpResponseRedirect(reverse('shop:merchant_list'))
         else:
@@ -63,6 +64,43 @@ def login(request):
             return HttpResponseRedirect(reverse('shop:merchant_list'))
         else:
             return render(request,'shop/login.html')
+
+@login_required
+def merchant_homepage(request):
+    allProds=[]
+    catprods= Product.objects.values('category','product_id')
+    cats={item['category'] for item in catprods}
+    for cat in cats:
+        merchant = UserRegistration.objects.filter(user_id = request.user.id).first()
+        prod=Product.objects.filter(category=cat,merchant_id=merchant.id)
+        n=len(prod)
+        nSlides=n//4+ceil(n/4-(n//4))
+        allProds.append([prod, range(1,nSlides), nSlides])
+    params = {'allProds':allProds}
+    return render(request,'shop/merchant_homepage.html',params)
+
+@login_required
+def product_delete(request,product_id):
+    Product.objects.filter(product_id=product_id).delete()
+    return HttpResponseRedirect(reverse('shop:merchant_homepage'))
+
+@login_required
+def product_add(request):
+    if request.method =='POST':
+        merchant = UserRegistration.objects.filter(user_id = request.user.id).first()
+        new_product = Product(product_name=request.POST['name'],
+                              category = request.POST['category'],
+                              subcategory = request.POST['subcategory'],
+                              price = request.POST['price'],
+                              desc = request.POST['desc'],
+                              pub_date =datetime.datetime.now() ,
+                              image = request.FILES['image'],
+                              merchant_id = merchant.id)
+        new_product.save()
+        return HttpResponseRedirect(reverse('shop:merchant_homepage'))
+    else:
+        return render(request, 'shop/merchant_add.html')
+
 
 @login_required
 def merchant_list(request):

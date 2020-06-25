@@ -26,3 +26,5 @@ class UserRegistrationForm(forms.ModelForm):
         model = UserRegistration
         fields = ('name','is_merchant','address','zipcode','phone','city','state')
 
+
+
