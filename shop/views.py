@@ -36,8 +36,11 @@ def register(request):
 
     # if request.method == 'GET':
     else:
-        user_form = UserForm()
-        profile_form = UserRegistrationForm()
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('shop:merchant_list'))
+        else:
+            user_form = UserForm()
+            profile_form = UserRegistrationForm()
 
     return render(request, 'shop/register.html', {'user_form':user_form, 'profile_form' : profile_form})
 
