@@ -1,0 +1,70 @@
+{% extends 'shop/basic.html' %}
+{% block title%} Checkout - Visa Anywhere{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2>Review Your Cart Items</h2>
+        <div>
+            <ul class="list-group" id="items">
+            </ul>
+        </div>
+    </div>
+    <div class="col my-4">
+        <form method="POST" action="/shop/checkout/">{% csrf_token %}
+            <input type="hidden" id="itemsJson" name="itemsJson">
+            <div class="radio">
+                <label><input type="radio" name="is_delivery" value="Drive-In" checked>Drive-In</label>
+                <label><input type="radio" name="is_delivery" value="Home Delivery">Home Delivery</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Place Order</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+if($.isEmptyObject(cart))
+{
+    mystr=`<h5>Your Cart is Empty!!<h5>`;
+    $('#items').append(mystr);
+}
+else
+{
+    let total=0;
+for(var item in cart)
+{
+    let name=cart[item][1];
+    let qty=cart[item][0];
+    let price=cart[item][2]*qty;
+    total=total+price;
+    let mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${name}
+                    <span class="badge badge-primary badge-pill">${qty}</span>
+                    <span class="badge badge-primary badge-pill">Rs. ${price}</span>
+                </li>`;
+    $('#items').append(mystr);
+}
+let mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    Total Payable Amount
+                    <span class="badge badge-primary badge-pill">Rs. ${total}</span>
+                </li>`;
+    $('#items').append(mystr);
+}
+var count=0;
+for(var i=0;i<Object.keys(cart).length;i++)
+count=count+Object.values(cart)[i][0];
+document.getElementById('cart').innerHTML = count;
+$('#itemsJson').val(JSON.stringify(cart));
+{% if thank %}
+alert("Your Order has been successfully placed.");
+localStorage.clear();
+document.location="{% url 'shop:merchant_list' %}";
+{% endif %}
+</script>
+{% endblock %}
