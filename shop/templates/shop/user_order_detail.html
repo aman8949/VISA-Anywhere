@@ -1,0 +1,115 @@
+{% extends 'shop/basic.html' %}
+{% block title%} Order Detail - Visa Anywhere{% endblock %}
+{% block body %}
+
+<div class="container my-3">
+    <h1>Order Details</h1>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="2"><strong>Order Details<strong></td>
+        </tr>
+        <tr>
+          <td>Order ID</td>
+          <td>{{order.order_id}}</td>
+        </tr>
+        <tr>
+          <td>Items Ordered</td>
+          <td>{{order.items_json}}</td>
+        </tr>
+        <tr>
+          <td>Mode of Getting Items</td>
+          {% if order.is_delivery %}
+          <td>Home Delivery</td>
+          {% else %}
+          <td>Drive-In</td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td>Current Order Status</td>
+          <td id="order_stat">{{order.order_status}}</td>
+        </tr>
+        <tr>
+          <td>Order Time</td>
+          <td>{{order.time}}</td>
+        </tr>
+        <tr>
+          <td colspan="2"><strong>Merchant Details</strong></td>
+        </tr>
+        <tr>
+          <td>Merchant Name</td>
+          <td>{{order.merchant.name}}</td>
+        </tr>
+        <tr>
+          <td>Merchant Address</td>
+          <td>{{order.merchant.address}}</td>
+        </tr>
+        <tr>
+          <td>Merchant Phone</td>
+          <td>{{order.merchant.phone}}</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div id="select_action" class="container my-3" style="display:none;">
+    <form action="#" method="post" enctype="multipart/form-data"> {% csrf_token %}
+      <button type="submit" class="btn btn-success">Proceed to Payment</button>
+    </form>
+  </div>
+{% endblock %}
+{% block js %}
+<script>
+    var stat=document.getElementById('order_stat').innerHTML;
+    var x=document.getElementById('select_action');
+    if(stat=="Approved")
+      x.style.display="block";
+
+
+    //Find out the cart items from localStorage
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        updateCart(cart);
+    }
+    //Add Popover to cart
+    $('#popcart').popover();
+    updatePopover(cart);
+    
+    function updatePopover(cart){
+        var popStr="";
+        popStr=popStr + "<h6>Items in your cart</h6><div class='mx-2 my-2'>";
+        var i=1;
+        for(var item in cart){
+            popStr=popStr + "<b>"+ i + "</b>. ";
+            popStr=popStr+cart[item][1] + "... Qty: "+ cart[item][0]+ '<br>';
+            i=i+1;
+        }
+        popStr=popStr+"</div><a href='/shop/checkout'><button id='checkout' class='btn btn-primary'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-primary'>Clear Cart</button>";
+        document.getElementById("popcart").setAttribute('data-content', popStr);
+        $('#popcart').popover('show');
+    }
+    function updateCart(cart) {
+        localStorage.setItem('cart', JSON.stringify(cart));
+        var count=0;
+        for(var i=0;i<Object.keys(cart).length;i++)
+        count=count+Object.values(cart)[i][0];
+        document.getElementById('cart').innerHTML = count;
+        updatePopover(cart);
+    }
+    function clearCart(){
+        cart=JSON.parse(localStorage.getItem('cart'));
+        localStorage.clear();
+        cart={};
+        updateCart(cart);
+    }
+</script>
+
+{% endblock %}

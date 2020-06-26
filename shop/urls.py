@@ -19,4 +19,5 @@ urlpatterns = [
     path('mer_order_list/',views.mer_order_list, name='mer_order_list'),
     path('mer_order_detail/<int:order_id>', views.mer_order_detail, name='mer_order_detail'),
     path('user_order_list/',views.user_order_list, name='user_order_list'),
+    path('user_order_detail/<int:order_id>', views.user_order_detail, name='user_order_detail'),
 ]

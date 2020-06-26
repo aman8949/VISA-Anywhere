@@ -73,6 +73,7 @@ def login(request):
             return HttpResponseRedirect(reverse('shop:merchant_homepage'))
         return render(request,'shop/login.html')
 
+# Merchant Homepage
 @login_required
 def merchant_homepage(request):
     allProds=[]
@@ -86,12 +87,14 @@ def merchant_homepage(request):
         allProds.append([prod, range(1,nSlides), nSlides])
     params = {'allProds':allProds}
     return render(request,'shop/merchant_homepage.html',params)
-
+    
+# Merchant Product Delete
 @login_required
 def product_delete(request,product_id):
     Product.objects.filter(product_id=product_id).delete()
     return HttpResponseRedirect(reverse('shop:merchant_homepage'))
 
+# Merchant Product Add
 @login_required
 def product_add(request):
     if request.method =='POST':
@@ -152,7 +155,7 @@ def checkout(request):
         mer_id = request.POST['merid']
         thank=True
         order=Order(items_json=items_json, user_id=user.id, is_delivery= (request.POST['is_delivery']=='Home Delivery'), 
-                    merchant=mer_id, time = datetime.datetime.now())
+                    merchant_id=mer_id, time = datetime.datetime.now())
         order.save()
         return render(request, 'shop/checkout.html',{'thank':thank})
     return render(request, 'shop/checkout.html')
@@ -160,14 +163,13 @@ def checkout(request):
 @login_required
 def mer_order_list(request):
     merchant = UserRegistration.objects.filter(user_id=request.user.id).first()
-    orders = Order.objects.filter(merchant = merchant.id).order_by('-time')
+    orders = Order.objects.filter(merchant_id = merchant.id).order_by('-time')
     return render(request, 'shop/mer_order_list.html', {'orders':orders})
 
 @login_required
 def mer_order_detail(request,order_id):
-    order=Order.objects.filter(order_id=order_id)
+    order=Order.objects.filter(order_id=order_id).first()
     if request.method=="POST":
-        order=Order.objects.get(order_id=order_id)
         if request.POST['order_status']=="Accept Order":
             order.order_status = "Approved"
             order.est_time=request.POST.get('time')
@@ -175,10 +177,16 @@ def mer_order_detail(request,order_id):
             order.order_status = "Rejected"
         order.save()
         return HttpResponseRedirect(reverse('shop:mer_order_list'))
-    return render(request, 'shop/mer_order_detail.html', {'order':order[0]})
+    return render(request, 'shop/mer_order_detail.html', {'order':order})
 
 @login_required
 def user_order_list(request):
     user = UserRegistration.objects.filter(user_id=request.user.id).first()
     orders = Order.objects.filter(user_id = user.id).order_by('-time')
-    return render(request, '',{'orders':orders})
+    return render(request, 'shop/user_order_list.html',{'orders':orders})
+
+@login_required
+def user_order_detail(request,order_id):
+    order = Order.objects.filter(order_id = order_id).first()
+    return render(request, 'shop/user_order_detail.html', {'order':order})
+
