@@ -1,22 +1,25 @@
 {% extends 'shop/basic.html' %}
 {% block title%} Visa Anywhere{% endblock %}
 {% block body %}
-<div class="container">
-    <div class="col my-4">
-        <h2>Merchants Nearby Your Location...</h2>
-        <div>
-            <ul class="list-group" id="items">
-                {% for x in merchant_list %}
-                <a href="{% url 'shop:product_list' x.id %}"><li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{x.name}}
-                    <span class="badge badge-primary badge-pill">{{x.address}}</span>
-                </li></a>
-                {% endfor %}
-            </ul>
-        </div>
-
+<div class="container my-3">
+    <h2>Merchants Nearby Your Location...</h2>
+    <table class="table table-hover my-4">
+        <thead>
+          <tr>
+            <th scope="col">Merchant Name</th>
+            <th scope="col">Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for x in merchant_list %}
+                <tr>
+                    <td><a href="{% url 'shop:product_list' x.id %}">{{x.name}}</a></td>
+                    <td><a href="{% url 'shop:product_list' x.id %}">{{x.address}}</a></td>
+                  </tr>
+            {% endfor %}
+        </tbody>
+      </table>
     </div>
-</div>
 {% endblock %}
 
 {% block js %}
