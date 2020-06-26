@@ -44,10 +44,29 @@ padding-right: 0;
 {% endblock %}
 {% block body %}
 {% load static %}
+
+<div class="container">
+    <div class="col my-4">
+        <h2 align="center">Merchants Nearby Your Location as per search...</h2>
+        <div>
+            <ul class="list-group" id="items">
+                {% for x in merchant_list %}
+                <a href="{% url 'shop:product_list' x.id %}"><li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{x.name}}
+                    <span class="badge badge-primary badge-pill">{{x.address}}</span>
+                </li></a>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+
 <div class="container">
     <!--Slideshow starts here -->
     {% for product, range, nSlides in allProds %}
-    <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
+    <h2 class="my-4" align="center">Searched Products</h2>
     <div class="row">
         <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
             <ul class="carousel-indicators">
@@ -96,7 +115,7 @@ padding-right: 0;
 <script>
 {% if msg|length != 0 %}
 alert('{{msg}}');
-window.location.href = "/"
+window.location.href = "/shop/merchant_list/"
 {% endif %}
 // Find out the cart items from localStorage
 if (localStorage.getItem('cart') == null) {
