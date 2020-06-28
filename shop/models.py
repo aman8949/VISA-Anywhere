@@ -10,6 +10,8 @@ class UserRegistration(models.Model):
     city = models.CharField(max_length=50)
     name = models.CharField(max_length=50, null = True)
     state = models.CharField(max_length=50)
+    house_no = models.CharField(max_length=50, null = True)
+    area = models.CharField(max_length=100, null = True)
     
     def __str__(self):
         return self.user.username

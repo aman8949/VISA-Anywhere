@@ -24,7 +24,7 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = UserRegistration
-        fields = ('name','is_merchant','address','zipcode','phone','city','state')
+        fields = ('name','is_merchant','house_no','area','zipcode','phone','city','state')
 
 
 

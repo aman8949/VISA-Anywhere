@@ -1,9 +1,39 @@
 {% extends 'shop/basic.html' %}
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+{% endblock %}
 {% block title%} Order Detail - Visa Anywhere{% endblock %}
 {% block body %}
 
-<div class="container my-3">
-    <h1>Order Details</h1>
+
+<div class=" col-4 container my-0">
+      <strong><section style="display: none;" id="section_" class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    <div class="box">
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-50x50">
+                                    <img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png" alt="Image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <span class="title">{{city_weather.city}}</span>
+                                        <br>
+                                        <span class="subtitle">{{city_weather.temperature}}</span>
+                                        <br> {{city_weather.description}}
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section></strong>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -23,6 +53,7 @@
           <td>Items Ordered</td>
           <td>{{order.items_json}}</td>
         </tr>
+        <p style="display:none;" id="order_deli">{{order.is_delivery}}</p>
         <tr>
           <td>Mode of Getting Items</td>
           {% if order.is_delivery %}
@@ -43,6 +74,7 @@
           <td>Expected Order Completion Time</td>
           <td>{{order.est_time}}</td>
         </tr>
+        
         <tr>
           <td colspan="2"><strong>Merchant Details</strong></td>
         </tr>
@@ -73,6 +105,12 @@
     var x=document.getElementById('select_action');
     if(stat=="Approved")
       x.style.display="block";
+
+    var state=document.getElementById('order_deli').innerHTML;
+    var xe=document.getElementById('section_');
+    console.log(state);
+    if(state=="False")
+      xe.style.display="block";
 
 
     //Find out the cart items from localStorage
@@ -117,3 +155,5 @@
 </script>
 
 {% endblock %}
+
+
