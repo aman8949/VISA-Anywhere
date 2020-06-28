@@ -162,6 +162,7 @@ def search(request):
     for cat in cats:
         prod_temp=Product.objects.filter(category=cat)
         prod = [ item for item in prod_temp if searchMatchProduct(query,item)]
+        print(prod[merchant])
         n=len(prod)
         nSlides=n//4+ceil(n/4-(n//4))
 
@@ -169,10 +170,10 @@ def search(request):
             allProds.append([prod, range(1,nSlides), nSlides])
 
     
-    params = {'allProds': allProds, "msg": "",'merchant_list':allMerc}
+    params = {'query_list': allProds, "msg": "",'merchant_list':allMerc}
     if len(allProds) == 0 and len(allMerc) == 0:
         params = {'msg': "Please make sure to enter relevant search query"}
-    return render(request, 'shop/search.html', params)
+    return render(request, 'shop/search1.html', params)
 
 
 def contact(request):
