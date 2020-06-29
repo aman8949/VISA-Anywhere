@@ -12,6 +12,7 @@ import requests
 import urllib.parse
 import json
 from django.http import JsonResponse
+from .VISA_MSearch import *
 
 
 @login_required
@@ -156,6 +157,7 @@ def merchant_list(request):
     address = str(user.area) +", "+ str(user.city)+ ", "+ str(user.zipcode)
     url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(address) +'?format=json'
     response = requests.get(url).json()
+    print(response)
     return render(request, 'shop/mapbox.html', {'zipcode': user.zipcode,
                                                  'lat': response[0]['lat'],
                                                  'lon': response[0]['lon']})
