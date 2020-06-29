@@ -163,12 +163,14 @@ def search(request):
 
     allVisaMerc=[]
     result=json.loads(merchantSearch(query,"94127"))
-    merc=SearchModel()
-    info=result["merchantSearchServiceResponse"]["response"][0]["responseValues"]
-    merc.name=info["visaMerchantName"]
-    merc.address=info["merchantStreetAddress"]+", "+info["merchantCity"]+", "+info["merchantState"]+", "+info["merchantPostalCode"]
-    allVisaMerc.append(merc)
-    del merc
+    stata=result["merchantSearchServiceResponse"]["status"]["statusCode"]
+    if(stata=="CDI000" or stata == "CDI000MAXRCW"):
+        merc=SearchModel()
+        info=result["merchantSearchServiceResponse"]["response"][0]["responseValues"]
+        merc.name=info["visaMerchantName"]
+        merc.address=info["merchantStreetAddress"]+", "+info["merchantCity"]+", "+info["merchantState"]+", "+info["merchantPostalCode"]
+        allVisaMerc.append(merc)
+        del merc
 
     allProdsMerc=[]
     catprods= Product.objects.values('category','product_id')
