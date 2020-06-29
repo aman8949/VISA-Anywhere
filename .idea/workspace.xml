@@ -20,13 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2fd04167-f317-4cda-a791-bf9f32880da3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/VISA-Hackathon.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop/templates/shop/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/shop/templates/shop/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop/templates/shop/productView.html" beforeDir="false" afterPath="$PROJECT_DIR$/shop/templates/shop/productView.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shop/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +89,7 @@
       <updated>1592908665029</updated>
       <workItem from="1592908669144" duration="74000" />
       <workItem from="1592910055940" duration="2812000" />
+      <workItem from="1593195882026" duration="4000" />
     </task>
     <servers />
   </component>

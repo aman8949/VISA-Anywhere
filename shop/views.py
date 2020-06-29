@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login as login_user
-from .models import Product, Contact, Order, UserRegistration
+from .models import Product, Contact, Order, UserRegistration,SearchModel
 from math import ceil
 from django.urls import reverse, reverse_lazy
 from .forms import UserForm, UserRegistrationForm
@@ -167,43 +167,75 @@ def merchant_list2(request):
         is_merchant=True, zipcode=user.zipcode)
     return render(request, 'shop/merchant_list.html', {'merchant_list': merchant_l})
 
-@login_required
-def product_list(request, merchant_id):
-    allProds = []
-    catprods = Product.objects.values('category', 'product_id')
-    cats = {item['category'] for item in catprods}
+#@login_required
+def product_list(request,merchant_id):
+    allProds=[]
+    catprods= Product.objects.values('category','product_id')
+    cats={item['category'] for item in catprods}
     for cat in cats:
-        prod = Product.objects.filter(category=cat, merchant_id=merchant_id)
-        n = len(prod)
-        nSlides = n//4+ceil(n/4-(n//4))
-        allProds.append([prod, range(1, nSlides), nSlides])
-    params = {'allProds': allProds}
-    return render(request, 'shop/index.html', params)
+        prod=Product.objects.filter(category=cat,merchant_id=merchant_id)
+        n=len(prod)
+        nSlides=n//4+ceil(n/4-(n//4))
+        allProds.append([prod, range(1,nSlides), nSlides])
+    params = {'allProds':allProds}
+    return render(request,'shop/index.html',params)
 
-
-def searchMatch(query, item):
+def searchMatchProduct(query,item):
     if query in item.product_name or query in item.desc or query in item.category or query in item.product_name.lower() or query in item.desc.lower() or query in item.category.lower() or query in item.product_name.upper() or query in item.desc.upper() or query in item.category.upper():
         return True
     else:
         return False
 
+def searchMatchMerchant(query,merchant):
+    if query in merchant.name or query in merchant.name.lower() or query in merchant.name.upper():
+        return True
+    else:
+        return False
 
 @login_required
 def search(request):
     query = request.GET.get('search')
-    allProds = []
-    catprods = Product.objects.values('category', 'product_id')
-    cats = {item['category'] for item in catprods}
-    for cat in cats:
-        prod_temp = Product.objects.filter(category=cat)
-        prod = [item for item in prod_temp if searchMatch(query, item)]
-        n = len(prod)
-        nSlides = n//4+ceil(n/4-(n//4))
 
-        if len(prod) != 0:
-            allProds.append([prod, range(1, nSlides), nSlides])
-    params = {'allProds': allProds, "msg": ""}
-    if len(allProds) == 0 or len(query) < 4:
+    if len(query) <= 2 :
+        params = {'msg': "Please make sure to enter relevant search query"}
+        return render(request, 'shop/search.html', params)
+
+    allMerc=[]
+    user = UserRegistration.objects.filter(user_id=request.user.id).first()
+    merchants = UserRegistration.objects.filter(is_merchant=True, zipcode=user.zipcode)
+    merchant_list=[]
+    for mer in merchants:
+        if searchMatchMerchant(query,mer):
+            allMerc.append(mer)
+
+    allVisaMerc=[]
+    result=json.loads(merchantSearch(query,"94127"))
+    stata=result["merchantSearchServiceResponse"]["status"]["statusCode"]
+    if(stata=="CDI000" or stata == "CDI000MAXRCW"):
+        merc=SearchModel()
+        info=result["merchantSearchServiceResponse"]["response"][0]["responseValues"]
+        merc.name=info["visaMerchantName"]
+        merc.address=info["merchantStreetAddress"]+", "+info["merchantCity"]+", "+info["merchantState"]+", "+info["merchantPostalCode"]
+        allVisaMerc.append(merc)
+        del merc
+
+    allProdsMerc=[]
+    catprods= Product.objects.values('category','product_id')
+    cats={item['category'] for item in catprods}
+    for cat in cats:
+        prod_temp=Product.objects.filter(category=cat)
+        prod = [ item for item in prod_temp if searchMatchProduct(query,item)]
+        n=len(prod)
+        nSlides=n//4+ceil(n/4-(n//4))
+
+        if len(prod)!=0:
+            allProdsMerc.append(prod[0].merchant)
+
+    print(allProdsMerc)
+
+    
+    params = {'allProdMerc': allProdsMerc, "msg": "",'merchant_list':allMerc,'VISA_merchant':allVisaMerc}
+    if len(allProdsMerc) == 0 and len(allMerc) == 0 and len(allVisaMerc) == 0:
         params = {'msg': "Please make sure to enter relevant search query"}
     return render(request, 'shop/search.html', params)
 

@@ -50,3 +50,13 @@ class Order(models.Model):
     order_status = models.CharField(max_length=50, default="Action Pending", null=True)
     # merchant = models.IntegerField(null = True)
     merchant = models.ForeignKey('UserRegistration', on_delete = models.CASCADE, null =True,related_name='merchant')
+
+
+class SearchModel(models.Model):
+    address = models.CharField(max_length=500)
+    zipcode = models.CharField(max_length=6)
+    phone = models.CharField(max_length=10)
+    city = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, null = True)
+    state = models.CharField(max_length=50)
+    

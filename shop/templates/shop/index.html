@@ -40,9 +40,7 @@ display:none;
 {% load static %}
 <div class="container">
     <!--Slideshow starts here -->
-    
     {% for product, range, nSlides in allProds %}
-    {% if nSlides %}
     <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
     <div class="row">
         <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
@@ -85,12 +83,7 @@ display:none;
             <span class="carousel-control-next-icon"></span>
         </a>
     </div>
-    {% else %}
-    <div class="my-4">
-    <h2>Merchant has not listed any items yet!</h2></div>
-    {% endif %}
     {% endfor %}
-    
 </div>
 {% endblock %}
 {% block js %}
