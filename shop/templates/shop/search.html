@@ -47,9 +47,10 @@ padding-right: 0;
 
 <div class="container">
     <div class="col my-4">
-        <h2 align="center">Merchants Nearby Your Location as per search...</h2>
+        <h2 style="display:none;" id="sea1" class="text-center">Merchants Nearby Your Location as per search...</h2>
         <div>
             <ul class="list-group" id="items">
+                <p hidden="true" id="p1">{{merchant_list}}</p>
                 {% for x in merchant_list %}
                 <a href="{% url 'shop:product_list' x.id %}"><li class="list-group-item d-flex justify-content-between align-items-center">
                     {{x.name}}
@@ -64,9 +65,10 @@ padding-right: 0;
 
 <div class="container">
     <div class="col my-4">
-        <h2 align="center">VISA Registered Merchants Nearby as per search....</h2>
+        <h2 style="display:none;" id="sea2" class="text-center">VISA Registered Merchants Nearby as per search....</h2>
         <div>
             <ul class="list-group" id="items">
+            <p hidden="true" id="p2">{{VISA_merchant}}</p>
                 {% for x in VISA_merchant %}
                 <a ><li class="list-group-item d-flex justify-content-between align-items-center">
                     {{x.name}}
@@ -81,9 +83,10 @@ padding-right: 0;
 
 <div class="container">
     <div class="col my-4">
-        <h2 align="center">Merchants Nearby having searched item...</h2>
+        <h2 style="display:none;" id="sea3" class="text-center">Merchants Nearby selling searched item...</h2>
         <div>
             <ul class="list-group" id="items">
+                <p hidden="true" id="p3">{{allProdMerc}}</p>
                 {% for x in allProdMerc %}
                 <a href="{% url 'shop:product_list' x.id %}"><li class="list-group-item d-flex justify-content-between align-items-center">
                     {{x.name}}
@@ -100,6 +103,22 @@ padding-right: 0;
 {% endblock %}
 {% block js %}
 <script>
+    var stat=document.getElementById('p1').innerHTML;
+    var x=document.getElementById('sea1');
+    console.log(stat);
+    if(stat!="[]")
+      x.style.display="block";
+      
+    var state=document.getElementById('p2').innerHTML;
+    var xe=document.getElementById('sea2');
+    if(state!="[]")
+      xe.style.display="block";
+      
+    var statf=document.getElementById('p3').innerHTML;
+    var xf=document.getElementById('sea3');
+    if(statf!="[]")
+      xf.style.display="block";
+      
 {% if msg|length != 0 %}
 alert('{{msg}}');
 window.location.href = "/shop/merchant_list/"
@@ -129,7 +148,7 @@ if (localStorage.getItem('cart') == null) {
 $('#popcart').popover();
 updatePopover(cart);
 function updatePopover(cart) {
-    console.log('We are inside updatePopover');
+
     var popStr = "";
     popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
     var i = 1;
@@ -138,8 +157,8 @@ function updatePopover(cart) {
         popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item][0] + '<br>';
         i = i + 1;
     }
-    popStr = popStr + "</div> <a href='/shop/checkout'><button class='btn btn-primary' id ='checkout'>Checkout</button></a> <button class='btn btn-primary' onclick='clearCart()' id ='clearCart'>Clear Cart</button>     "
-    console.log(popStr);
+    popStr = popStr + "</div> <a href='/shop/checkout'><button class='btn btn-success' id ='checkout'>Checkout</button></a> <button class='btn btn-success' onclick='clearCart()' id ='clearCart'>Clear Cart</button>     "
+    
     document.getElementById('popcart').setAttribute('data-content', popStr);
     $('#popcart').popover('show');
 }
@@ -160,7 +179,7 @@ function updateCart(cart) {
     }
     localStorage.setItem('cart', JSON.stringify(cart));
     document.getElementById('cart').innerHTML = sum;
-    console.log(cart);
+    
     updatePopover(cart);
 }
 // If plus or minus button is clicked, change the cart as well as the display value

@@ -157,7 +157,6 @@ def merchant_list(request):
     address = str(user.area) +", "+ str(user.city)+ ", "+ str(user.zipcode)
     url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(address) +'?format=json'
     response = requests.get(url).json()
-    print(response)
     return render(request, 'shop/mapbox.html', {'zipcode': user.zipcode,
                                                  'lat': response[0]['lat'],
                                                  'lon': response[0]['lon']})
@@ -205,7 +204,6 @@ def search(request):
     allMerc=[]
     user = UserRegistration.objects.filter(user_id=request.user.id).first()
     merchants = UserRegistration.objects.filter(is_merchant=True, zipcode=user.zipcode)
-    merchant_list=[]
     for mer in merchants:
         if searchMatchMerchant(query,mer):
             allMerc.append(mer)
@@ -233,7 +231,7 @@ def search(request):
         if len(prod)!=0:
             allProdsMerc.append(prod[0].merchant)
 
-    print(allProdsMerc)
+    
 
     
     params = {'allProdMerc': allProdsMerc, "msg": "",'merchant_list':allMerc,'VISA_merchant':allVisaMerc}
