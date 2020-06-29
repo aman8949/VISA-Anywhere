@@ -3,11 +3,12 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login as login_user
-from .models import Product, Contact, Order, UserRegistration
+from .models import Product, Contact, Order, UserRegistration,SearchModel
 from math import ceil
 from django.urls import reverse, reverse_lazy
 from .forms import UserForm,UserRegistrationForm
 import datetime
+from .VISA_MSearch import *
 
 
 @login_required
@@ -148,6 +149,10 @@ def searchMatchMerchant(query,merchant):
 def search(request):
     query = request.GET.get('search')
 
+    if len(query) <= 2 :
+        params = {'msg': "Please make sure to enter relevant search query"}
+        return render(request, 'shop/search.html', params)
+
     allMerc=[]
     user = UserRegistration.objects.filter(user_id=request.user.id).first()
     merchants = UserRegistration.objects.filter(is_merchant=True, zipcode=user.zipcode)
@@ -156,7 +161,16 @@ def search(request):
         if searchMatchMerchant(query,mer):
             allMerc.append(mer)
 
-    allProds=[]
+    allVisaMerc=[]
+    result=json.loads(merchantSearch(query,"94127"))
+    merc=SearchModel()
+    info=result["merchantSearchServiceResponse"]["response"][0]["responseValues"]
+    merc.name=info["visaMerchantName"]
+    merc.address=info["merchantStreetAddress"]+", "+info["merchantCity"]+", "+info["merchantState"]+", "+info["merchantPostalCode"]
+    allVisaMerc.append(merc)
+    del merc
+
+    allProdsMerc=[]
     catprods= Product.objects.values('category','product_id')
     cats={item['category'] for item in catprods}
     for cat in cats:
@@ -166,11 +180,13 @@ def search(request):
         nSlides=n//4+ceil(n/4-(n//4))
 
         if len(prod)!=0:
-            allProds.append([prod, range(1,nSlides), nSlides])
+            allProdsMerc.append(prod[0].merchant)
+
+    print(allProdsMerc)
 
     
-    params = {'allProds': allProds, "msg": "",'merchant_list':allMerc}
-    if len(allProds) == 0 and len(allMerc) == 0:
+    params = {'allProdMerc': allProdsMerc, "msg": "",'merchant_list':allMerc,'VISA_merchant':allVisaMerc}
+    if len(allProdsMerc) == 0 and len(allMerc) == 0 and len(allVisaMerc) == 0:
         params = {'msg': "Please make sure to enter relevant search query"}
     return render(request, 'shop/search.html', params)
 

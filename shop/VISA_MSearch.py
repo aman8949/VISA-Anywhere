@@ -1,29 +1,57 @@
 import requests
+import json
+import zipcodes
+import pycountry
+import datetime
+
+
+cert='shop\\cert.pem'
+key="shop\\private.pem"
 url = "https://sandbox.api.visa.com/merchantsearch/v1/search"
 headers = {
   'Accept': 'application/json',
-  'Authorization': 'Basic NktRNzNBS0tBNVY4U1A4QjlZNlcyMWY5QVA1V1RGLUVtNV9QRE12VDg2Y0hpTUgySTpzalRrY3RWdGNmb05NcFRHdTZtNVV3b01XNjls',
+  'Authorization': 'Basic VlpIRzRSSk9JS1JQMVhaNjdPRE4yMTBIems2ZzRhdVJJc3JrNThsRzEwWjR0c2NQdzo3NjRyZ3BORXlFUGN0WHAxNFpadkJRYkE=',
   'Content-Type': 'application/json'
 }
+date=datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+date=date[0:23]
 
-def merchantsearch(merchantName,,merchantPostalCode)
-    payload = " \r\n{\r\n\"searchAttrList\": {\r\n\"merchantName\": \"STARBUCKS\", \
-                                            \r\n\"merchantCity\": \"SAN FRANCISCO\",\
-                                            \r\n\"merchantState\": \"CA\",\
-                                            \r\n\"merchantPostalCode\": \"94127\",\
-                                            \r\n\"merchantCountryCode\": \"840\"\r\n},\
-                \r\n\"responseAttrList\": [\r\n\"GNSTANDARD\"\r\n],\
-                \r\n\"searchOptions\": {\r\n\"wildCard\": [\r\n\"merchantName\"\r\n],\
-                                        \r\n\"maxRecords\": \"5\",\
-                                        \r\n\"matchIndicators\": \"true\",\
-                                        \r\n\"matchScore\": \"true\",\
-                                        \r\n\"proximity\": [\r\n\"merchantName\"\r\n]\r\n},\
-                \r\n\"header\": {\r\n\"requestMessageId\": \"Request_001\",\
-                                \r\n\"startIndex\": \"0\",\
-                                \r\n\"messageDateTime\": \"2020-06-26T17:49:01.903\"\r\n}\r\n}"
+payload = json.loads('''
+{
+"searchAttrList": {
+"merchantName": "STARBUCKS",
+"merchantCity": "",
+"merchantState": "",
+"merchantPostalCode": "94127",
+"merchantCountryCode": "840"
+},
+"responseAttrList": [
+"GNSTANDARD"
+],
+"searchOptions": {
+"wildCard": [
+"merchantName"
+],
+"maxRecords": "5",
+"matchIndicators": "true",
+"matchScore": "true",
+"proximity": [
+"merchantName"
+]
+},
+"header": {
+"requestMessageId": "Request_001",
+"startIndex": "0",
+"messageDateTime": "'''+date+'''"
+}
+}''')
 
+def merchantSearch(merchantName,merchantPostalCode):
+	country=zipcodes.matching(merchantPostalCode)[0]["country"]
+	merchantCountryCode = pycountry.countries.get(alpha_2=country).numeric
+	payload["searchAttrList"]["merchantName"]=merchantName
+	payload["searchAttrList"]["merchantPostalCode"]=merchantPostalCode
+	payload["searchAttrList"]["merchantCountryCode"]=merchantCountryCode
 
-
-    response = requests.request("POST", url, headers=headers, data = payload)
-
-print(response.text.encode('utf8'))
+	response = requests.request("POST",  url,cert=(cert,key), headers=headers, json = payload)
+	return(response.text.encode('utf8'))
