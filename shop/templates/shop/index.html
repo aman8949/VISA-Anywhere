@@ -66,8 +66,6 @@ display:none;
                                 <span id="divpr{{i.product_id}}" class="divpr">
                                     <button id="pr{{i.product_id}}" class="btn btn-primary cart">Add To Cart</button>
                                 </span>
-                                <a href="/shop/products/{{i.product_id}}"><button id="qv{{i.product_id}}"
-                                        class="btn btn-primary cart">QuickView</button></a>
                             </div>
                         </div>
                     </div>
@@ -141,7 +139,7 @@ display:none;
             popStr = popStr + cart[item][1] + "... Qty: " + cart[item][0] + '<br>';
             i = i + 1;
         }
-        popStr = popStr + "</div><a href='/shop/checkout'><button id='checkout' class='btn btn-primary'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-primary'>Clear Cart</button>";
+        popStr = popStr + "</div><a href='/shop/checkout'><button id='checkout' class='btn btn-success'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-success'>Clear Cart</button>";
         document.getElementById("popcart").setAttribute('data-content', popStr);
         $('#popcart').popover('show');
     }

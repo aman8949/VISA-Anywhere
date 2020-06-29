@@ -134,7 +134,7 @@
             popStr=popStr+cart[item][1] + "... Qty: "+ cart[item][0]+ '<br>';
             i=i+1;
         }
-        popStr=popStr+"</div><a href='/shop/checkout'><button id='checkout' class='btn btn-primary'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-primary'>Clear Cart</button>";
+        popStr=popStr+"</div><a href='/shop/checkout'><button id='checkout' class='btn btn-success'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-success'>Clear Cart</button>";
         document.getElementById("popcart").setAttribute('data-content', popStr);
         $('#popcart').popover('show');
     }

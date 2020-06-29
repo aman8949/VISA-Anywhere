@@ -17,7 +17,7 @@
                 <label><input type="radio" name="is_delivery" value="Drive-In" checked>Drive-In</label>
                 <label><input type="radio" name="is_delivery" value="Home Delivery">Home Delivery</label>
             </div>
-            <button type="submit" class="btn btn-primary">Place Order</button>
+            <button type="submit" class="btn btn-success">Place Order</button>
         </form>
     </div>
 </div>
@@ -46,14 +46,14 @@ for(var item in cart)
     total=total+price;
     let mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
                     ${name}
-                    <span class="badge badge-primary badge-pill">${qty}</span>
-                    <span class="badge badge-primary badge-pill">Rs. ${price}</span>
+                    <span class="badge badge-success badge-pill">${qty}</span>
+                    <span class="badge badge-success badge-pill">Rs. ${price}</span>
                 </li>`;
     $('#items').append(mystr);
 }
 let mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
                     Total Payable Amount
-                    <span class="badge badge-primary badge-pill">Rs. ${total}</span>
+                    <span class="badge badge-success badge-pill">Rs. ${total}</span>
                 </li>`;
     $('#items').append(mystr);
 }
@@ -64,7 +64,7 @@ document.getElementById('cart').innerHTML = count;
 $('#merid').val(Object.values(cart)[0][3]);
 $('#itemsJson').val(JSON.stringify(cart));
 {% if thank %}
-alert("Your Order has been successfully placed.");
+alert("Your Order has been successfully placed with merchant. Please check My Orders tab to view the order status.");
 localStorage.clear();
 document.location="{% url 'shop:merchant_list' %}";
 {% endif %}

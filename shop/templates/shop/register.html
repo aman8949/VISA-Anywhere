@@ -9,10 +9,15 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
     <title>Register- Visa Anywhere</title>
+    <style>
+      .visa{
+        background-color: #00276a;
+      }
+    </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="/shop">Visa Anywhere</a>
+    <nav class="navbar navbar-expand-lg navbar-dark visa">
+      <img class="navbar-brand" style="width: 7rem;" src="https://cdn.visa.com/cdn/assets/images/logos/visa/logo.png" alt="Visa logo">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -32,7 +37,7 @@
                         <!---{% crispy user_form %}
                         {% crispy profile_form %}--->
                         <div class="mx-auto text-center">
-                            <input type="submit" value="Create Account" class="btn btn-primary">
+                            <input type="submit" value="Create Account" class="btn btn-success">
                         </div>
                     </form>
                     <a href="/shop/login">Already Registered? Sign In Here!</a>

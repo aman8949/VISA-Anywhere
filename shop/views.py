@@ -219,10 +219,10 @@ def contact(request):
     return render(request, 'shop/contact.html')
 
 
-@login_required
-def productView(request, id):
-    product = Product.objects.filter(product_id=id)
-    return render(request, 'shop/productView.html', {'product': product[0]})
+# @login_required
+# def productView(request, id):
+#     product = Product.objects.filter(product_id=id)
+#     return render(request, 'shop/productView.html', {'product': product[0]})
 
 
 @login_required

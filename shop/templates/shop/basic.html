@@ -12,26 +12,31 @@
     <title>{% block title %} {% endblock %}</title>
       <style>{% block css %} {% endblock %}</style>
       {% block head %} {% endblock %}
+      <style>
+        .visa{
+          background-color: #00276a;
+        }
+      </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="/shop">Visa Anywhere</a>
+    <nav class="navbar navbar-expand-lg navbar-dark visa">
+      <img class="navbar-brand" style="width: 7rem;" src="https://cdn.visa.com/cdn/assets/images/logos/visa/logo.png" alt="Visa logo">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="/shop">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="#">About Us</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="/shop/contact">Contact Us</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="{% url 'shop:user_order_list' %}">My Orders</a>
       </li>
     </ul>
@@ -40,13 +45,13 @@
         name="search" id="search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
-    <button type="button" class="btn btn-secondary mx-2" data-html="true" id="popcart" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Click to View Cart">
+    <button type="button" class="btn btn-success mx-2" data-html="true" id="popcart" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Click to View Cart">
       Cart (<span id="cart">0</span>)
 </button>
 {% if user.is_authenticated %}
-<a href="{% url 'shop:logout' %}"><button onclick="clearCart()" class="btn btn-secondary" type="button">Logout</button></a>
+<a href="{% url 'shop:logout' %}"><button onclick="clearCart()" class="btn btn-success" type="button">Logout</button></a>
 {% else %}
-<a href="{% url 'shop:login' %}"><button onclick="clearCart()" type="button" class="btn btn-secondary">Log In</button></a>
+<a href="{% url 'shop:login' %}"><button onclick="clearCart()" type="button" class="btn btn-success">Log In</button></a>
 {% endif %}
   </div>
 </nav>
@@ -64,7 +69,7 @@
         cart = JSON.parse(localStorage.getItem('cart'));
         for (var item in cart) {
             if (document.getElementById('div' + item) != null)
-                document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>'
+                document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-success cart">Add To Cart</button>'
         }
         localStorage.clear();
         cart = {};
