@@ -121,7 +121,7 @@ padding-right: 0;
       
 {% if msg|length != 0 %}
 alert('{{msg}}');
-window.location.href = "/shop/merchant_list/"
+window.location.href = "/shop/merchant_list2/"
 {% endif %}
 // Find out the cart items from localStorage
 if (localStorage.getItem('cart') == null) {
@@ -147,21 +147,23 @@ if (localStorage.getItem('cart') == null) {
 //Add Popover to cart
 $('#popcart').popover();
 updatePopover(cart);
-function updatePopover(cart) {
-
-    var popStr = "";
-    popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
-    var i = 1;
-    for (var item in cart) {
-        popStr = popStr + "<b>" + i + "</b>. ";
-        popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item][0] + '<br>';
-        i = i + 1;
-    }
-    popStr = popStr + "</div> <a href='/shop/checkout'><button class='btn btn-success' id ='checkout'>Checkout</button></a> <button class='btn btn-success' onclick='clearCart()' id ='clearCart'>Clear Cart</button>     "
-    
-    document.getElementById('popcart').setAttribute('data-content', popStr);
-    $('#popcart').popover('show');
-}
+function updatePopover(cart){
+      var popStr="";
+      popStr=popStr + "<h6>Items in your cart</h6><div class='mx-2 my-2'>";
+      var i=1;
+      let id=-1;
+      for(var item in cart){
+          popStr=popStr + "<b>"+ i + "</b>. ";
+          popStr=popStr+cart[item][1] + "... Qty: "+ cart[item][0]+ '<br>';
+          i=i+1;
+          id=cart[item][3];
+      }
+      var locate = "{% url 'shop:checkout' 12345 %}".replace(/12345/, id.toString());
+      if(id!=-1)
+      popStr=popStr+`</div><a href=${locate}><button id='checkout' class='btn btn-success'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-success'>Clear Cart</button>`;
+      document.getElementById("popcart").setAttribute('data-content', popStr);
+      $('#popcart').popover('show');
+  }
 function clearCart() {
     cart = JSON.parse(localStorage.getItem('cart'));
     for (var item in cart) {

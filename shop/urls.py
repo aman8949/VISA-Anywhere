@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.home, name = 'home'),
     path('contact/', views.contact, name = "ShopContact"),
     # path('products/<int:id>', views.productView, name='ProductView'),
-    path('checkout/', views.checkout, name="Checkout"),
+    path('checkout/<int:merchant_id>', views.checkout, name="checkout"),
     path('login/', views.login, name = 'login'),
     path('logout/', views.user_logout, name = 'logout'),
     path('register/', views.register, name='register'),
@@ -23,4 +23,5 @@ urlpatterns = [
     path('user_order_list/',views.user_order_list, name='user_order_list'),
     path('user_order_detail/<int:order_id>', views.user_order_detail, name='user_order_detail'),
     path('load_json/',views.load_json, name='load_json'),
+    path('load_queue_json/',views.load_queue_json, name='load_queue_json'),
 ]

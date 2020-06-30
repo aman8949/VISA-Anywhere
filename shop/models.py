@@ -12,6 +12,8 @@ class UserRegistration(models.Model):
     state = models.CharField(max_length=50)
     house_no = models.CharField(max_length=50, null = True)
     area = models.CharField(max_length=100, null = True)
+    wait_time=models.CharField(max_length=10, null=True)
+    slots=models.CharField(max_length=200,null=True)
     
     def __str__(self):
         return self.user.username

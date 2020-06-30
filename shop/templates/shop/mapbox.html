@@ -26,17 +26,17 @@
       top: 600px;
       margin: 8px;
     }
-    
-      .visa{
-        background-color: #00276a;
-      }
-    
+
+    .visa {
+      background-color: #00276a;
+    }
   </style>
 </head>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark visa">
-    <img class="navbar-brand" style="width: 7rem;" src="https://cdn.visa.com/cdn/assets/images/logos/visa/logo.png" alt="Visa logo">
+    <img class="navbar-brand" style="width: 7rem;" src="https://cdn.visa.com/cdn/assets/images/logos/visa/logo.png"
+      alt="Visa logo">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -58,8 +58,8 @@
         </li>
       </ul>
       <form method='get' action='/shop/merchant_list/search/' class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-          name="search" id="search">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search"
+          id="search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
       <button type="button" class="btn btn-success mx-2" data-html="true" id="popcart" data-container="body"
@@ -75,7 +75,7 @@
       {% endif %}
     </div>
   </nav>
-  
+
   <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
   <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
@@ -137,25 +137,35 @@
 
 </script>
 <script>
+  var urls = ["{% url 'shop:load_json' %}", "{% url 'shop:load_queue_json' %}"];
   function updateMap() {
-    fetch("{% url 'shop:load_json' %}")
-      .then(response => response.json())
-      .then(rsp => {
-        rsp.forEach(element => {
-          let zip = document.getElementById('zip').innerHTML;
-          if (zip == element.zipcode) {
-            latitude = element.lat;
-            longitude = element.lon;
-            var location = "{% url 'shop:product_list' 12345 %}".replace(/12345/, element.id.toString());
-            // console.log(latitude);
-            // Mark on the map
-            new mapboxgl.Marker({ draggable: false })
-              .setLngLat([longitude, latitude])
-              .setPopup(new mapboxgl.Popup().setHTML(`<div>Merchant Name: ${element.name}</div><div>Merchant Address: ${element.address}</div><div>Phone: ${element.phone}</div><div>Wait Time: ${element.phone}</div><div><a href=${location}><button type="button" class="btn btn-success btn-sm">Proceed To Shop</button></a></div>`))
-              .addTo(map);
-          }
+    urls.forEach(function (url) {
+      fetch(url)
+        .then(response => response.json())
+        .then(rsp => {
+          rsp.forEach(element => {
+            let zip = document.getElementById('zip').innerHTML;
+            if (zip == element.zipcode) {
+              latitude = element.lat;
+              longitude = element.lon;
+              if (url == "{% url 'shop:load_queue_json' %}") {
+                new mapboxgl.Marker({ draggable: false })
+                  .setLngLat([longitude, latitude])
+                  .setPopup(new mapboxgl.Popup().setHTML(`<div>Merchant Name: ${element.name}</div><div>Merchant Address: ${element.address}</div><div>Phone: ${element.phone}</div><div>Wait Time: ${element.wait_time} seconds</div><div><a href="#"><button type="button" class="btn btn-success btn-sm">Proceed To Shop</button></a></div>`))
+                  .addTo(map);
+              }
+              else {
+                var location = "{% url 'shop:product_list' 12345 %}".replace(/12345/, element.id.toString());
+                // Mark on the map
+                new mapboxgl.Marker({ draggable: false })
+                  .setLngLat([longitude, latitude])
+                  .setPopup(new mapboxgl.Popup().setHTML(`<div>Merchant Name: ${element.name}</div><div>Merchant Address: ${element.address}</div><div>Phone: ${element.phone}</div><div>Wait Time: ${element.wait_time} seconds</div><div><a href=${location}><button type="button" class="btn btn-success btn-sm">Proceed To Shop</button></a></div>`))
+                  .addTo(map);
+              }
+            }
+          })
         })
-      })
+    });
   }
   updateMap();
 
@@ -163,42 +173,47 @@
 <script>
   // Find out the cart items from localStorage
   if (localStorage.getItem('cart') == null) {
-      var cart = {};
+    var cart = {};
   } else {
-      cart = JSON.parse(localStorage.getItem('cart'));
-      document.getElementById('cart').innerHTML = Object.keys(cart).length;
-      updateCart(cart);
+    cart = JSON.parse(localStorage.getItem('cart'));
+    document.getElementById('cart').innerHTML = Object.keys(cart).length;
+    updateCart(cart);
   }
   //Add Popover to cart
   $('#popcart').popover();
   updatePopover(cart);
-  
-  function updatePopover(cart){
-      var popStr="";
-      popStr=popStr + "<h6>Items in your cart</h6><div class='mx-2 my-2'>";
-      var i=1;
-      for(var item in cart){
-          popStr=popStr + "<b>"+ i + "</b>. ";
-          popStr=popStr+cart[item][1] + "... Qty: "+ cart[item][0]+ '<br>';
-          i=i+1;
-      }
-      popStr=popStr+"</div><a href='/shop/checkout'><button id='checkout' class='btn btn-success'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-success'>Clear Cart</button>";
-      document.getElementById("popcart").setAttribute('data-content', popStr);
-      $('#popcart').popover('show');
+
+  function updatePopover(cart) {
+    var popStr = "";
+    popStr = popStr + "<h6>Items in your cart</h6><div class='mx-2 my-2'>";
+    var i = 1;
+    let id = -1;
+    for (var item in cart) {
+      popStr = popStr + "<b>" + i + "</b>. ";
+      popStr = popStr + cart[item][1] + "... Qty: " + cart[item][0] + '<br>';
+      i = i + 1;
+      id = cart[item][3];
+    }
+    var locate = "{% url 'shop:checkout' 12345 %}".replace(/12345/, id.toString());
+    if (id != -1)
+      popStr = popStr + `</div><a href=${locate}><button id='checkout' class='btn btn-success'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-success'>Clear Cart</button>`;
+    document.getElementById("popcart").setAttribute('data-content', popStr);
+    $('#popcart').popover('show');
   }
   function updateCart(cart) {
-      localStorage.setItem('cart', JSON.stringify(cart));
-      var count=0;
-      for(var i=0;i<Object.keys(cart).length;i++)
-      count=count+Object.values(cart)[i][0];
-      document.getElementById('cart').innerHTML = count;
-      updatePopover(cart);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    var count = 0;
+    for (var i = 0; i < Object.keys(cart).length; i++)
+      count = count + Object.values(cart)[i][0];
+    document.getElementById('cart').innerHTML = count;
+    updatePopover(cart);
   }
-  function clearCart(){
-      cart=JSON.parse(localStorage.getItem('cart'));
-      localStorage.clear();
-      cart={};
-      updateCart(cart);
+  function clearCart() {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    localStorage.clear();
+    cart = {};
+    updateCart(cart);
   }
-  </script>
+</script>
+
 </html>

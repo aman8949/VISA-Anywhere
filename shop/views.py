@@ -13,6 +13,7 @@ import urllib.parse
 import json
 from django.http import JsonResponse
 from .VISA_MSearch import *
+from .VISA_Queue import *
 
 
 @login_required
@@ -48,6 +49,7 @@ def register(request):
                 resp['id'] = profile.id
                 resp['name'] = profile.name
                 resp['address'] = profile.address
+                resp['phone'] = profile.phone
                 #merchant_list.append(resp)
                 jsonFile = 'shop/templates/shop/data.json'
                 # Open a json file for writing json data
@@ -154,6 +156,28 @@ def product_add(request):
 @login_required
 def merchant_list(request):
     user = UserRegistration.objects.filter(user_id=request.user.id).first()
+    mer_que=[]
+    if user.zipcode=="94306" or user.zipcode=="94105":
+        r=json.loads(merchantQueue())
+        for item in r['responseData']['merchantList']:
+                address = str(item['city'])+", "+ str(item['state']) +", " +str(item['country']) +", "+ str(item['zip'])
+                url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(address) +'?format=json'
+                response = requests.get(url).json()
+                resp={}
+                resp['lat']=response[0]['lat']
+                resp['lon']=response[0]['lon']
+                resp['zipcode']=str(item['zip'])
+                resp['id'] = str(item['feedbackCorrelationID'])
+                resp['name'] = str(item['name'])
+                resp['address'] = address
+                resp['wait_time'] = str(item['waitTime'])
+                #merchant_list.append(resp)
+                mer_que.append(resp)
+                
+        jsonFile = 'shop/templates/shop/data_queue.json'
+                # Open a json file for writing json data
+        with open(jsonFile, 'w') as outfile:
+            json.dump(mer_que, outfile)
     address = str(user.area) +", "+ str(user.city)+ ", "+ str(user.zipcode)
     url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(address) +'?format=json'
     response = requests.get(url).json()
@@ -210,10 +234,10 @@ def search(request):
 
     allVisaMerc=[]
     result=json.loads(merchantSearch(query,"94127"))
-    stata=result["merchantSearchServiceResponse"]["status"]["statusCode"]
+    stata=result["merchantLocatorServiceResponse"]["status"]["statusCode"]
     if(stata=="CDI000" or stata == "CDI000MAXRCW"):
         merc=SearchModel()
-        info=result["merchantSearchServiceResponse"]["response"][0]["responseValues"]
+        info=result["merchantLocatorServiceResponse"]["response"][0]["responseValues"]
         merc.name=info["visaMerchantName"]
         merc.address=info["merchantStreetAddress"]+", "+info["merchantCity"]+", "+info["merchantState"]+", "+info["merchantPostalCode"]
         allVisaMerc.append(merc)
@@ -258,7 +282,7 @@ def contact(request):
 
 
 @login_required
-def checkout(request):
+def checkout(request, merchant_id):
     if request.method == "POST":
         user = UserRegistration.objects.filter(user_id=request.user.id).first()
         items_json = request.POST.get('itemsJson')
@@ -268,7 +292,7 @@ def checkout(request):
                       merchant_id=mer_id, time=datetime.datetime.now())
         order.save()
         return render(request, 'shop/checkout.html', {'thank': thank})
-    return render(request, 'shop/checkout.html')
+    return render(request, 'shop/checkout.html',{'merchant_id':merchant_id})
 
 
 @login_required
@@ -316,3 +340,7 @@ def user_order_detail(request, order_id):
 
 def load_json(request):
     return render(request, 'shop/data.json')
+
+def load_queue_json(request):
+    return render(request, 'shop/data_queue.json')
+

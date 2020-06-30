@@ -126,17 +126,21 @@
     updatePopover(cart);
     
     function updatePopover(cart){
-        var popStr="";
-        popStr=popStr + "<h6>Items in your cart</h6><div class='mx-2 my-2'>";
-        var i=1;
-        for(var item in cart){
-            popStr=popStr + "<b>"+ i + "</b>. ";
-            popStr=popStr+cart[item][1] + "... Qty: "+ cart[item][0]+ '<br>';
-            i=i+1;
-        }
-        popStr=popStr+"</div><a href='/shop/checkout'><button id='checkout' class='btn btn-success'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-success'>Clear Cart</button>";
-        document.getElementById("popcart").setAttribute('data-content', popStr);
-        $('#popcart').popover('show');
+      var popStr="";
+      popStr=popStr + "<h6>Items in your cart</h6><div class='mx-2 my-2'>";
+      var i=1;
+      let id=-1;
+      for(var item in cart){
+          popStr=popStr + "<b>"+ i + "</b>. ";
+          popStr=popStr+cart[item][1] + "... Qty: "+ cart[item][0]+ '<br>';
+          i=i+1;
+          id=cart[item][3];
+      }
+      var locate = "{% url 'shop:checkout' 12345 %}".replace(/12345/, id.toString());
+      if(id!=-1)
+      popStr=popStr+`</div><a href=${locate}><button id='checkout' class='btn btn-success'>Checkout</button></a> <button id='clearCart' onclick='clearCart()' class='btn btn-success'>Clear Cart</button>`;
+      document.getElementById("popcart").setAttribute('data-content', popStr);
+      $('#popcart').popover('show');
     }
     function updateCart(cart) {
         localStorage.setItem('cart', JSON.stringify(cart));
