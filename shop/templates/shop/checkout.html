@@ -15,7 +15,7 @@
             <input type="hidden" id="merid" name="merid">
             <div class="radio">
                 <label><input type="radio" name="is_delivery" value="Drive-In" checked>Drive-In</label>
-                <label><input type="radio" name="is_delivery" value="Home Delivery">Home Delivery</label>
+                <label><input type="radio" name="is_delivery" value="Home Delivery" disabled>Home Delivery</label>
             </div>
 
             <div class="form-group col-md-4">
@@ -91,7 +91,7 @@
     {% if thank %}
     alert("Your Order has been successfully placed with merchant. Please check My Orders tab to view the order status.");
     localStorage.clear();
-    document.location = "{% url 'shop:merchant_list' %}";
+    document.location = "{% url 'shop:user_order_list' %}";
     {% endif %}
 </script>
 {% endblock %}

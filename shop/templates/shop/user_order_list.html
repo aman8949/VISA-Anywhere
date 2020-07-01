@@ -15,8 +15,8 @@
         {% for x in orders %}
               <tr>
                   <td><a id="ads{{x.order_id}}" href="{% url 'shop:user_order_detail' x.order_id %}">{{x.merchant.name}}</a></td>
-                  <td><a href="{% url 'shop:user_order_detail' x.order_id %}">{{x.time}}</a></td>
-                  <td><a href="{% url 'shop:user_order_detail' x.order_id %}">{{x.order_status}}</a></td>
+                  <td>{{x.time}}</td>
+                  <td>{{x.order_status}}</td>
                 </tr>
           {% endfor %}
       </tbody>

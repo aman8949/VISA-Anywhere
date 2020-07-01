@@ -15,8 +15,8 @@
           {% for x in merchant_list %}
                 <tr>
                     <td><a href="{% url 'shop:product_list' x.id %}">{{x.name}}</a></td>
-                    <td><a href="{% url 'shop:product_list' x.id %}">{{x.wait_time}}</a></td>
-                    <td><a href="{% url 'shop:product_list' x.id %}">{{x.address}}</a></td>
+                    <td>{{x.wait_time}}</td>
+                    <td>{{x.address}}</td>
                   </tr>
             {% endfor %}
         </tbody>

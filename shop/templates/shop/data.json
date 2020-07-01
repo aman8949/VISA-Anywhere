@@ -1,19 +1,29 @@
 [
   {
-    "lat": "25.3228749",
-    "lon": "82.9634357",
-    "zipcode": "221005",
-    "id": 7,
-    "name": "mer5",
-    "address": "123, Sigra"
+    "lat": "37.7937238",
+    "lon": "-122.3923362",
+    "zipcode": "94105",
+    "id": 32,
+    "name": "Waterbar Restaurant",
+    "address": "399, Embarcadero",
+    "phone": "8888888888"
   },
   {
-    "lat": "25.2810922",
-    "lon": "82.9988377",
-    "zipcode": "221005",
-    "id": 26,
-    "name": "mer10",
-    "address": "345, Lanka",
-    "phone": "7390942797"
+    "lat": "37.7889341",
+    "lon": "-122.3895288",
+    "zipcode": "94105",
+    "id": 33,
+    "name": "Everyday Grocery",
+    "address": "345, Spear Street",
+    "phone": "9999999999"
+  },
+  {
+    "lat": "37.7922307",
+    "lon": "-122.3944962",
+    "zipcode": "94105",
+    "id": 34,
+    "name": "Walgreens Medical Shop",
+    "address": "456, Mission St.",
+    "phone": "7777777777"
   }
 ]

@@ -20,7 +20,7 @@ from .VISA_Queue import *
 @login_required
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('shop:login'))
+    return HttpResponseRedirect(reverse('home'))
 
 
 def register(request):
@@ -62,6 +62,7 @@ def register(request):
                 if type(data) is dict:
                     data = [data]
                 data.append(resp)
+                print(data)
                 with open(jsonFile, 'w') as fileHandler1:
                     json.dump(data, fileHandler1, indent = 2)
                 
@@ -82,6 +83,7 @@ def register(request):
             profile_form = UserRegistrationForm()
 
     return render(request, 'shop/register.html', {'user_form': user_form, 'profile_form': profile_form})
+
 
 
 def home(request):
@@ -270,7 +272,7 @@ def search(request):
     for mer in merchants:
         if searchMatchMerchant(query,mer):
             allMerc.append(mer)
-
+    
     allVisaMerc=[]
     result=json.loads(merchantSearch(query,"94132"))
     stata=result["merchantLocatorServiceResponse"]["status"]["statusCode"]
