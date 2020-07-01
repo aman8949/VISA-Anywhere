@@ -5,7 +5,12 @@
 {% block title%} Order Detail - Visa Anywhere{% endblock %}
 {% block body %}
 
-
+<div id="aler1" style="display:none;" class="alert alert-primary" role="alert">
+  Merchant has suggested you to come at {{order.est_time}} to avoid the crowd. Your items will be packed by then. Keep Shopping!!
+</div>
+<div id="aler2" style="display:none;" class="alert alert-primary" role="alert">
+  Your items will be safely delivered by {{order.est_time}}. Keep Shopping!!
+</div>
 <div class=" col-4 container my-0">
       <strong><section style="display: none;" id="section_" class="section">
         <div class="container">
@@ -74,7 +79,10 @@
           <td>Expected Order Completion Time</td>
           <td>{{order.est_time}}</td>
         </tr>
-        
+        <tr>
+          <td>Total Price</td>
+          <td>Rs. {{order.price}}</td>
+        </tr>
         <tr>
           <td colspan="2"><strong>Merchant Details</strong></td>
         </tr>
@@ -93,13 +101,39 @@
       </tbody>
     </table>
     </div>
-    <div id="select_action" class="container my-3" style="display:none;">
+    <div id="select_action" class="container my-3" style="display:none;" >
+      <img alt="Visa Checkout" class="v-button" role="button"
+      src="https://sandbox.secure.checkout.visa.com/wallet-services-web/xo/button.png" />
+      <script type="text/javascript"
+      src="https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js">
+      </script>
+    </div>
+
+    <!--div id="select_action" class="container my-3" style="display:none;">
     <form action="#" method="post" enctype="multipart/form-data"> {% csrf_token %}
       <button type="submit" class="btn btn-success">Proceed to Payment</button>
     </form>
-  </div>
+  </div--->
 {% endblock %}
 {% block js %}
+
+<script type="text/javascript">
+  var price=document.getElementById('order_price').innerHTML;
+  function onVisaCheckoutReady() {
+  V.init( {
+  apikey: "NEJQ37EGFKDAS3M8UO6C21eUczMcgFSoWyfqeMkO3zKxLS8yY",
+  encryptionKey: "3J5T87A0TPCR8AT9BDNK13wFGGi9o_fcxHCpLx107zSGC83c0",
+  paymentRequest: {
+  currencyCode: "INR",
+  subtotal: `${price}`
+  }
+  });
+  V.on("payment.success", function(payment) { document.write("payment.success: \n" + JSON.stringify(payment)); });
+  V.on("payment.cancel", function(payment) { document.write("payment.cancel: \n" + JSON.stringify(payment)); });
+  V.on("payment.error", function(payment, error) { document.write("payment.error: \n" + JSON.stringify(payment) + "\n" + JSON.stringify(error)); });
+  }
+</script>
+
 <script>
     var stat=document.getElementById('order_stat').innerHTML;
     var x=document.getElementById('select_action');
@@ -108,9 +142,12 @@
 
     var state=document.getElementById('order_deli').innerHTML;
     var xe=document.getElementById('section_');
-    console.log(state);
-    if(state=="False")
-      xe.style.display="block";
+    var ye=document.getElementById('aler1');
+    var ze=document.getElementById('aler2');
+    if(state=="False" && stat=="Approved")
+      {xe.style.display="block";ye.style.display="block";}
+    else if(stat=="Approved") 
+      ze.style.display="block";
 
 
     //Find out the cart items from localStorage

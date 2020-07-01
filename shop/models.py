@@ -13,7 +13,7 @@ class UserRegistration(models.Model):
     house_no = models.CharField(max_length=50, null = True)
     area = models.CharField(max_length=100, null = True)
     wait_time=models.CharField(max_length=10, null=True)
-    slots=models.CharField(max_length=200,null=True)
+    slots=models.CharField(max_length=1200,null=True,default='{"Date":"01-01-2000"}')
     
     def __str__(self):
         return self.user.username
@@ -28,6 +28,7 @@ class Product(models.Model):
     desc = models.CharField(max_length=300, null = True)
     pub_date = models.DateField()
     image = models.ImageField(upload_to="shop/images",default="")
+    
 
     def __str__(self):
         return self.product_name
@@ -52,6 +53,7 @@ class Order(models.Model):
     order_status = models.CharField(max_length=50, default="Action Pending", null=True)
     # merchant = models.IntegerField(null = True)
     merchant = models.ForeignKey('UserRegistration', on_delete = models.CASCADE, null =True,related_name='merchant')
+    price=models.IntegerField(default=0,null=True)
 
 
 class SearchModel(models.Model):

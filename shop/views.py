@@ -8,6 +8,7 @@ from math import ceil
 from django.urls import reverse, reverse_lazy
 from .forms import UserForm, UserRegistrationForm
 import datetime
+from datetime import timedelta
 import requests
 import urllib.parse
 import json
@@ -37,6 +38,10 @@ def register(request):
             profile = profile_form.save(commit=False)
             profile.address = profile.house_no + ", " + profile.area
             profile.user = user
+            test = 'shop/templates/shop/test.json'
+            with open(test, 'r') as fileHandler2:
+                test_str=fileHandler2.read()
+                profile.slots=test_str
             profile.save()
             if profile.is_merchant:
                 address = str(profile.area)+", "+ str(profile.city) +", "+ str(profile.zipcode)
@@ -59,6 +64,8 @@ def register(request):
                 data.append(resp)
                 with open(jsonFile, 'w') as fileHandler1:
                     json.dump(data, fileHandler1, indent = 2)
+                
+                    
             return HttpResponseRedirect(reverse('shop:login'))
         else:
             print(user_form.errors)
@@ -113,14 +120,17 @@ def merchant_homepage(request):
     allProds = []
     catprods = Product.objects.values('category', 'product_id')
     cats = {item['category'] for item in catprods}
+    h=False
     for cat in cats:
         merchant = UserRegistration.objects.filter(
             user_id=request.user.id).first()
         prod = Product.objects.filter(category=cat, merchant_id=merchant.id)
         n = len(prod)
         nSlides = n//4+ceil(n/4-(n//4))
+        if nSlides>0 :
+            h=True
         allProds.append([prod, range(1, nSlides), nSlides])
-    params = {'allProds': allProds}
+    params = {'allProds': allProds, 'h':h}
     return render(request, 'shop/merchant_homepage.html', params)
 
 # Merchant Product Delete
@@ -155,7 +165,32 @@ def product_add(request):
 
 @login_required
 def merchant_list(request):
+    
+    date=datetime.datetime.now().strftime("%d-%m-%Y")
+    dt=datetime.datetime.now().strftime("%Y-%m-%d")
     user = UserRegistration.objects.filter(user_id=request.user.id).first()
+    merchant_l = UserRegistration.objects.filter(is_merchant=True, zipcode=user.zipcode)
+    dic = {}
+    for mer in merchant_l:
+        data = json.loads(mer.slots)
+        test_str=data
+        if data['Date']!=str(date):
+            # print(data["Date"])
+            # print(str(date))
+            test = 'shop/templates/shop/test.json'
+            with open(test, 'r') as fileHandler2:
+                test_str=fileHandler2.read()
+                test_str = json.loads(test_str)
+                test_str['Date']=date
+            mer.slots=json.dumps(test_str)
+        for temp in test_str:
+            if temp > str(datetime.datetime.now().strftime("%H:%M")) and test_str[temp] < "9" and temp!= "Date":
+                dic[mer.id] = datetime.datetime.strptime(temp, "%H:%M") - datetime.datetime.strptime(str(datetime.datetime.now().strftime("%H:%M")), "%H:%M")
+                mer.wait_time = dic[mer.id] 
+                mer.save()
+                break
+        
+        
     mer_que=[]
     if user.zipcode=="94306" or user.zipcode=="94105":
         r=json.loads(merchantQueue())
@@ -183,7 +218,8 @@ def merchant_list(request):
     response = requests.get(url).json()
     return render(request, 'shop/mapbox.html', {'zipcode': user.zipcode,
                                                  'lat': response[0]['lat'],
-                                                 'lon': response[0]['lon']})
+                                                 'lon': response[0]['lon'],
+                                                 'merchant':dic})
 
 @login_required
 def merchant_list2(request):
@@ -197,12 +233,15 @@ def product_list(request,merchant_id):
     allProds=[]
     catprods= Product.objects.values('category','product_id')
     cats={item['category'] for item in catprods}
+    h=False
     for cat in cats:
         prod=Product.objects.filter(category=cat,merchant_id=merchant_id)
         n=len(prod)
         nSlides=n//4+ceil(n/4-(n//4))
+        if nSlides > 0:
+            h=True
         allProds.append([prod, range(1,nSlides), nSlides])
-    params = {'allProds':allProds}
+    params = {'allProds':allProds,'h':h}
     return render(request,'shop/index.html',params)
 
 def searchMatchProduct(query,item):
@@ -233,7 +272,7 @@ def search(request):
             allMerc.append(mer)
 
     allVisaMerc=[]
-    result=json.loads(merchantSearch(query,"94127"))
+    result=json.loads(merchantSearch(query,"94132"))
     stata=result["merchantLocatorServiceResponse"]["status"]["statusCode"]
     if(stata=="CDI000" or stata == "CDI000MAXRCW"):
         merc=SearchModel()
@@ -275,24 +314,43 @@ def contact(request):
     return render(request, 'shop/contact.html')
 
 
-# @login_required
-# def productView(request, id):
-#     product = Product.objects.filter(product_id=id)
-#     return render(request, 'shop/productView.html', {'product': product[0]})
-
-
 @login_required
 def checkout(request, merchant_id):
+    merchant = UserRegistration.objects.filter(id=merchant_id).first()
+    date=datetime.datetime.now().strftime("%d-%m-%Y")
+    dt=datetime.datetime.now().strftime("%Y-%m-%d")
+    data = json.loads(merchant.slots)
+    test_str=data
+    if data['Date']!=str(date):
+        test = 'shop/templates/shop/test.json'
+        with open(test, 'r') as fileHandler2:
+            test_str=fileHandler2.read()
+            test_str = json.loads(test_str)
+            test_str['Date']=date
+    time=datetime.datetime.now().strftime("%H:%M")
+    time=str(time)
     if request.method == "POST":
         user = UserRegistration.objects.filter(user_id=request.user.id).first()
         items_json = request.POST.get('itemsJson')
         mer_id = request.POST['merid']
+        test_str[request.POST['drop'][0:5]]=str(int(test_str[request.POST['drop'][0:5]])+1)
+        merchant.slots=json.dumps(test_str, indent = 2)
+
+        data=json.loads(items_json)
+        total=0
+        for item in data:
+            total = total + int(data[item][0])*int(data[item][2])
+
         thank = True
         order = Order(items_json=items_json, user_id=user.id, is_delivery=(request.POST['is_delivery'] == 'Home Delivery'),
-                      merchant_id=mer_id, time=datetime.datetime.now())
+                      est_time=dt+" "+request.POST['drop'][0:5], merchant_id=mer_id, time=datetime.datetime.now(),price=total)
+        
         order.save()
-        return render(request, 'shop/checkout.html', {'thank': thank})
-    return render(request, 'shop/checkout.html',{'merchant_id':merchant_id})
+        merchant.save()
+        return render(request, 'shop/checkout.html', {'merchant_id':merchant_id,'thank': thank})
+    #When request method is get
+    
+    return render(request, 'shop/checkout.html',{'merchant_id':merchant_id,'str':test_str,'time': time})
 
 
 @login_required
@@ -313,6 +371,7 @@ def mer_order_detail(request, order_id):
             order.order_status = "Rejected"
         order.save()
         return HttpResponseRedirect(reverse('shop:mer_order_list'))
+    #datetime.datetime.strptime("00:30", "%H:%M")
     return render(request, 'shop/mer_order_detail.html', {'order': order})
 
 

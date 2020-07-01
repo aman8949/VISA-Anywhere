@@ -10,16 +10,41 @@
         </div>
     </div>
     <div class="col my-4">
-        <form method="POST" action="/shop/checkout/">{% csrf_token %}
+        <form method="POST" action="{% url 'shop:checkout' merchant_id %}">{% csrf_token %}
             <input type="hidden" id="itemsJson" name="itemsJson">
             <input type="hidden" id="merid" name="merid">
             <div class="radio">
                 <label><input type="radio" name="is_delivery" value="Drive-In" checked>Drive-In</label>
                 <label><input type="radio" name="is_delivery" value="Home Delivery">Home Delivery</label>
             </div>
-            <div style="display: block;" id="tim"> 
-                <label>Select Slot <input type="datetime-local" name="time"></label>
-            </div>            
+
+            <div class="form-group col-md-4">
+                <label for="inputState">Select Time-Slot</label>
+                <select name="drop" id="inputState" class="form-control">
+                    <option selected>Choose</option>
+                    {% for key, value in str.items %}
+                    {% ifnotequal key "Date" %}
+                    {% if key|stringformat:"s" > time|stringformat:"s" %}
+                    {% if key|stringformat:"s" > "09:30" %}
+                    {% if key|stringformat:"s" < "21:00" %}
+                    {% ifequal value "9" %}
+                    <option class="badge badge-danger badge-pill" disabled>
+                        <span>{{key}}</span>
+                        <span> - Not Available</span>
+                    </option>
+                    {% else %}
+                    <option class="my-4 badge badge-success badge-pill">
+                        <span>{{key}}</span>
+                        <span> - Available</span>
+                    </option>
+                    {% endifequal %}
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endifnotequal %}
+                    {% endfor %}
+                </select>
+            </div>
             <button type="submit" class="btn btn-success">Place Order</button>
         </form>
     </div>
@@ -29,47 +54,44 @@
 {% block js %}
 <script>
     if (localStorage.getItem('cart') == null) {
-    var cart = {};
-} else {
-    cart = JSON.parse(localStorage.getItem('cart'));
-}
-if($.isEmptyObject(cart))
-{
-    mystr=`<h5>Your Cart is Empty!!<h5>`;
-    $('#items').append(mystr);
-}
-else
-{
-    let total=0;
-for(var item in cart)
-{
-    let name=cart[item][1];
-    let qty=cart[item][0];
-    let price=cart[item][2]*qty;
-    total=total+price;
-    let mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+        var cart = {};
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+    if ($.isEmptyObject(cart)) {
+        mystr = `<h5>Your Cart is Empty!!<h5>`;
+        $('#items').append(mystr);
+    }
+    else {
+        let total = 0;
+        for (var item in cart) {
+            let name = cart[item][1];
+            let qty = cart[item][0];
+            let price = cart[item][2] * qty;
+            total = total + price;
+            let mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
                     ${name}
                     <span class="badge badge-success badge-pill">${qty}</span>
                     <span class="badge badge-success badge-pill">Rs. ${price}</span>
                 </li>`;
-    $('#items').append(mystr);
-}
-let mystr=`<li class="list-group-item d-flex justify-content-between align-items-center">
+            $('#items').append(mystr);
+        }
+        let mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
                     Total Payable Amount
                     <span class="badge badge-success badge-pill">Rs. ${total}</span>
                 </li>`;
-    $('#items').append(mystr);
-}
-var count=0;
-for(var i=0;i<Object.keys(cart).length;i++)
-count=count+Object.values(cart)[i][0];
-document.getElementById('cart').innerHTML = count;
-$('#merid').val(Object.values(cart)[0][3]);
-$('#itemsJson').val(JSON.stringify(cart));
-{% if thank %}
-alert("Your Order has been successfully placed with merchant. Please check My Orders tab to view the order status.");
-localStorage.clear();
-document.location="{% url 'shop:merchant_list' %}";
-{% endif %}
+        $('#items').append(mystr);
+    }
+    var count = 0;
+    for (var i = 0; i < Object.keys(cart).length; i++)
+        count = count + Object.values(cart)[i][0];
+    document.getElementById('cart').innerHTML = count;
+    $('#merid').val(Object.values(cart)[0][3]);
+    $('#itemsJson').val(JSON.stringify(cart));
+    {% if thank %}
+    alert("Your Order has been successfully placed with merchant. Please check My Orders tab to view the order status.");
+    localStorage.clear();
+    document.location = "{% url 'shop:merchant_list' %}";
+    {% endif %}
 </script>
 {% endblock %}

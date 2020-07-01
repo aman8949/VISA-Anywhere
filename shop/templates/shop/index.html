@@ -40,7 +40,7 @@ display:none;
 {% load static %}
 <div class="container">
     <!--Slideshow starts here -->
-    
+    {% if h %}
     {% for product, range, nSlides in allProds %}
     {% if nSlides %}
     <h5 class="my-4">{{product.0.category}}</h5>
@@ -85,11 +85,13 @@ display:none;
             <span class="carousel-control-next-icon"></span>
         </a>
     </div>
+    {% endif %}
+    {% endfor %}
     {% else %}
     <div class="my-4">
     <h2>Merchant has not listed any items yet!</h2></div>
     {% endif %}
-    {% endfor %}
+    
     
 </div>
 {% endblock %}

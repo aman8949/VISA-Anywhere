@@ -20,12 +20,19 @@
     }
 
     #mer_list {
+      position: absolute;
+      bottom: 15px;
+      right: 16px;
+      z-index: 1;
+      margin: 8px;
+    }
+    /* #mer_list {
       position: relative;
       z-index: 1;
       left: 1320px;
       top: 600px;
       margin: 8px;
-    }
+    } */
 
     .visa {
       background-color: #00276a;
@@ -87,6 +94,9 @@
   <p style="display: none;" id="zip">{{zipcode}}</p>
   <p style="display: none;" id="lat">{{lat}}</p>
   <p style="display: none;" id="lon">{{lon}}</p>
+  {% for key,value in merchant.items %}
+  <p style="display: none;" id="wait{{key}}">{{value}}</p>
+  {% endfor %}
   <div class="my-1" id='map'><a href="{% url 'shop:merchant_list2' %}"><button type="button" id="mer_list"
         class="btn btn-success">View Merchant List</button></a></div>
   <!-- Optional JavaScript -->
@@ -157,9 +167,11 @@
               else {
                 var location = "{% url 'shop:product_list' 12345 %}".replace(/12345/, element.id.toString());
                 // Mark on the map
+                var wait=document.getElementById('wait'+element.id).innerHTML;
+                console.log(wait)
                 new mapboxgl.Marker({ draggable: false })
                   .setLngLat([longitude, latitude])
-                  .setPopup(new mapboxgl.Popup().setHTML(`<div>Merchant Name: ${element.name}</div><div>Merchant Address: ${element.address}</div><div>Phone: ${element.phone}</div><div>Wait Time: ${element.wait_time} seconds</div><div><a href=${location}><button type="button" class="btn btn-success btn-sm">Proceed To Shop</button></a></div>`))
+                  .setPopup(new mapboxgl.Popup().setHTML(`<div>Merchant Name: ${element.name}</div><div>Merchant Address: ${element.address}</div><div>Phone: ${element.phone}</div><div>Wait Time: ${wait} </div><div><a href=${location}><button type="button" class="btn btn-success btn-sm">Proceed To Shop</button></a></div>`))
                   .addTo(map);
               }
             }
