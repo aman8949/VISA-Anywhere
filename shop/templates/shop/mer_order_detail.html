@@ -116,9 +116,15 @@
         <br>
         <label><input type="radio" id="reject" name="order_status" value="Reject Order">Reject Order</label>
       </div>
-      <div style="display: none;" id="tim"> 
-      <label>Specify Estimated Time<input type="datetime-local" name="time"></label>
-    </div>
+      <div class="form-group col-md-4" style="display: none;" id="tim"> 
+          <label for="inputState">Select Preferrable Time in Slot</label>
+          <select name="time" id="inputState" class="form-control">
+              <option selected>Choose</option>
+              {% for key in list_time %}
+              <option>{{key}}</option>
+              {% endfor %}
+          </select>
+      </div>
     <br>
       <button type="submit" class="btn btn-success">Submit</button>
     </form>

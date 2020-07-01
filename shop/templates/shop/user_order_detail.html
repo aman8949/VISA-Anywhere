@@ -12,7 +12,7 @@
   Your items will be safely delivered by {{order.est_time}}. Keep Shopping!!
 </div>
 <div class=" col-4 container my-0">
-      <strong><section style="display: none;" id="section_" class="section">
+      <strong><section id="section_" class="section">
         <div class="container">
             <div class="columns">
                 <div class="column is-offset-4 is-4">
@@ -101,6 +101,11 @@
       </tbody>
     </table>
     </div>
+    <div style="display:none">
+      <form name="payment_form" action="{% url 'shop:user_order_detail' order.order_id %}" method="POST">{% csrf_token %}
+        <input style="display:none" type="text" name="payment" id="payment">
+      </form>
+    </div>
     <div id="select_action" class="container my-3" style="display:none;" >
       <img alt="Visa Checkout" class="v-button" role="button"
       src="https://sandbox.secure.checkout.visa.com/wallet-services-web/xo/button.png" />
@@ -128,10 +133,11 @@
   subtotal: `${price}`
   }
   });
-  V.on("payment.success", function(payment) { document.write("payment.success: \n" + JSON.stringify(payment)); });
-  V.on("payment.cancel", function(payment) { document.write("payment.cancel: \n" + JSON.stringify(payment)); });
-  V.on("payment.error", function(payment, error) { document.write("payment.error: \n" + JSON.stringify(payment) + "\n" + JSON.stringify(error)); });
+  V.on("payment.success", function(payment) { alert('Payment Successful!');var alpha=document.getElementById('payment');alpha.value="success";document.forms["payment_form"].submit();});
+  V.on("payment.cancel", function(payment) { alert('Payment Cancelled!');var alpha=document.getElementById('payment');alpha.value="cancel";document.forms["payment_form"].submit();});
+  V.on("payment.error", function(payment, error) { alert('Payment Error!');var alpha=document.getElementById('payment');alpha.value="error";document.forms["payment_form"].submit();});
   }
+  
 </script>
 
 <script>
@@ -141,12 +147,11 @@
       x.style.display="block";
 
     var state=document.getElementById('order_deli').innerHTML;
-    var xe=document.getElementById('section_');
     var ye=document.getElementById('aler1');
     var ze=document.getElementById('aler2');
-    if(state=="False" && stat=="Approved")
-      {xe.style.display="block";ye.style.display="block";}
-    else if(stat=="Approved") 
+    if(state=="False" && (stat=="Approved" || stat=="Payment Successful"))
+      {ye.style.display="block";}
+    else if(stat=="Approved" || stat=="Payment Successful") 
       ze.style.display="block";
 
 

@@ -364,15 +364,21 @@ def mer_order_list(request):
 def mer_order_detail(request, order_id):
     order = Order.objects.filter(order_id=order_id).first()
     if request.method == "POST":
+        dt=datetime.datetime.now().strftime("%Y-%m-%d")
         if request.POST['order_status'] == "Accept Order":
             order.order_status = "Approved"
-            order.est_time = request.POST.get('time')
+            order.est_time = dt+" "+request.POST['time']
         else:
             order.order_status = "Rejected"
         order.save()
         return HttpResponseRedirect(reverse('shop:mer_order_list'))
-    #datetime.datetime.strptime("00:30", "%H:%M")
-    return render(request, 'shop/mer_order_detail.html', {'order': order})
+    # print(type(order.est_time))
+    # str_time = datetime.datetime.strptime(str(order.est_time)[11:16], "%H:%M")
+    list_time=[]
+    dt=order.est_time + timedelta(hours=5,minutes=30)  
+    for i in range(6):
+        list_time.append(str(dt+timedelta(minutes=5*i))[11:16])
+    return render(request, 'shop/mer_order_detail.html', {'order': order, 'list_time':list_time})
 
 
 @login_required
@@ -394,6 +400,10 @@ def user_order_detail(request, order_id):
             'description' : r['weather'][0]['description'],
             'icon' : r['weather'][0]['icon'],
         }
+    if request.method == "POST" and request.POST['payment']=="success":
+        order.order_status = "Payment Successful"
+        order.save()
+        # print(request.POST['payment'])
     return render(request, 'shop/user_order_detail.html', {'order': order, 'city_weather':city_weather})
 
 
