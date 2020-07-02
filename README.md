@@ -1,7 +1,7 @@
 <p align="right">
-  <img src="https://img.shields.io/github/issues/aman8949/To-share-my-code-master" />
-  <img src="https://img.shields.io/github/forks/aman8949/To-share-my-code-master" />
-  <img src="https://img.shields.io/github/stars/aman8949/To-share-my-code-master" />
+  <img src="https://img.shields.io/github/issues/aman8949/VISA-Anywhere" />
+  <img src="https://img.shields.io/github/forks/aman8949/VISA-Anywhere" />
+  <img src="https://img.shields.io/github/stars/aman8949/VISA-Anywhere" />
 </p>
 
 # **VISA ANYWHERE**
@@ -16,15 +16,20 @@ With the integration of various **VISA APIs**, this project aims to prevent larg
 This web-app basically facilitate a user to preorder various items from a **VISA Card** accepting merchant (affiliated with our web-app) around his/her location while showing wait times of that particular merchant store for which a user should actually wait before picking up the order from that merchant store and thus, avoiding the crowd and maintaining social-distancing. To make the process safer and smoother, we also provide weather insights along with the options for home delivery and multiple slot availability for ordering throughout the day as per the merchant's consent and consumers' convenience.
 
 ## Visuals & Working:
-1. [![Google](https://www.google.co.in/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png)](http://127.0.0.1:8000/)
+#### 1. Homepage: 
+  [![README_1](https://github.com/aman8949/VISA-Anywhere/blob/master/media/shop/images/README_1.png)](http://127.0.0.1:8000/)
 
-2. [![Google](https://www.google.com/logos/doodles/2020/canada-day-2020-6753651837108439-2x.jpg)](http://127.0.0.1:8000/)
+#### 2. Registeration Page: 
+  [![README_2](https://github.com/aman8949/VISA-Anywhere/blob/master/media/shop/images/README_2.png)](http://127.0.0.1:8000/shop/register/)
 
-3. [![Google](https://www.google.com/logos/doodles/2020/teachers-day-2020-dominican-republic-6753651837108436-2x.jpg)](http://127.0.0.1:8000/)
+#### 3. Login Page: 
+  [![README_3](https://github.com/aman8949/VISA-Anywhere/blob/master/media/shop/images/README_3.png)](http://127.0.0.1:8000/shop/login/)
 
-4. [![Google](https://lh3.googleusercontent.com/iziht0qZJT9TNNYYfSoMxM9YLPEcJwldb038yAPNz19cUPZYn_0l6hIe1BSQ8DsjAVw8gxU7P8GmGLyjfqLjv_q7OBJJwKkyy3FbR3bi)](http://127.0.0.1:8000/)
+#### 4. Merchant list nearby the user: 
+  [![README_4](https://github.com/aman8949/VISA-Anywhere/blob/master/media/shop/images/README_4.png)](http://127.0.0.1:8000/shop/register/)
 
-5. [![Google](https://lh3.googleusercontent.com/oyA1uTY1GFpRkfTJxJAmH_FlRqrtGz-vNpFH9r2565n-nV6KdL-4OtNFETMYTny5H5MGqRHL13XQyED-sW21XCvNdIclVecM0_-zgQMm)](http://127.0.0.1:8000/)
+#### 5. Products list from selected Merchant Store: 
+  [![README_5](https://github.com/aman8949/VISA-Anywhere/blob/master/media/shop/images/README_5.png)](http://127.0.0.1:8000/shop/product_list/33)
 
 ## **Technologies Used**:
 * Python
@@ -48,8 +53,8 @@ This web-app basically facilitate a user to preorder various items from a **VISA
 Open Command Prompt/Terminal then follow:
  1. **Cloning the repository**:
     ```bash
-    git clone https://github.com/aman8949/To-share-my-code-master
-    cd .\To-share-my-code-master\
+    git clone https://github.com/aman8949/VISA-Anywhere
+    cd .\VISA-Anywhere\
     ```
 2. **Installation**:
     ```bash
@@ -85,10 +90,3 @@ This project is a part of a submission to **[Visa Global Intern Hackathon](https
     * [Rahul Kocheta](https://github.com/rahulkocheta)
 
 ----
-## **TO-DO:**
-* Change Screenshots URLs.
-* Change git clone URL (to-share-my-code)?
-* Check APIs Used.
-* Check Technologies Used.
-* Remove unnecessary fields
-* Add Required Fields
