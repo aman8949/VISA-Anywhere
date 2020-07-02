@@ -4,10 +4,16 @@ import json
 import zipcodes
 import pycountry
 import datetime
+import os
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SHOP_DIR = os.path.join(BASE_DIR,'shop')
+CERT_DIR=os.path.join(SHOP_DIR,'cert.pem')
+KEY=os.path.join(SHOP_DIR,'private.pem')
+#print(BASE_DIR)
 
-cert='shop\\cert.pem'
-key="shop\\private.pem"
+cert= CERT_DIR
+key=KEY
 url = "https://sandbox.api.visa.com/visaqueueinsights/v1/queueinsights"
 headers = {
   'Accept': 'application/json',

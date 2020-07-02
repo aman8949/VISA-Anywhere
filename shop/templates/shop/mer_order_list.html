@@ -47,6 +47,7 @@
           <tr>
             <th scope="col">Customer Name</th>
             <th scope="col">Address</th>
+            <th scope="col">Order Time</th>
             <th scope="col">Order Status</th>
           </tr>
         </thead>
@@ -55,6 +56,7 @@
                 <tr>
                     <td><a href="{% url 'shop:mer_order_detail' x.order_id %}">{{x.user.name}}</a></td>
                     <td>{{x.user.address}}</td>
+                    <td>{{x.time}}</td>
                     <td>{{x.order_status}}</td>
                   </tr>
             {% endfor %}

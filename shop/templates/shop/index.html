@@ -176,7 +176,7 @@ display:none;
         a = this.id.slice(7,);
         cart['pr' + a][0] = cart['pr' + a][0] - 1;
         cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
-        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+         document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
         updateCart(cart);
     });
     $('.divpr').on("click", "button.plus", function () {
