@@ -47,6 +47,7 @@ This web-app basically facilitate a user to preorder various items from a **VISA
 * **Third-Party**:
     * Mapbox
     * OpenWeatherMap
+    * OpenStreetMap
 
 ## **Development Setup**:
 ### **Getting started**:
